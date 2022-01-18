@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:openroadmap/export/plantuml_exporter.dart';
 import 'package:openroadmap/model/release.dart';
 import 'package:openroadmap/model/workpackage.dart';
 import 'package:openroadmap/util/or_provider.dart';
@@ -326,6 +327,13 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                 IconButton(
                   onPressed: () => orProvider.loadRoadmap(),
                   icon: Icon(Icons.upload_file),
+                ),
+                IconButton(
+                  onPressed: () {
+                    PlantUMLExporter exporter = PlantUMLExporter();
+                    exporter.export(orProvider);
+                  },
+                  icon: Icon(Icons.share),
                 ),
                 Consumer<ThemeProvider>(
                     builder: (context, themeProvider, child) {

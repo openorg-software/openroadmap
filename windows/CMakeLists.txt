@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 project(openroadmap LANGUAGES CXX)
 
-set(BINARY_NAME "OpenRoadmap")
+set(BINARY_NAME "openroadmap")
 
 cmake_policy(SET CMP0063 NEW)
 

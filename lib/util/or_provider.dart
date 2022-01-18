@@ -44,8 +44,10 @@ class ORProvider extends ChangeNotifier {
       dialogTitle: 'Save this roadmap:',
       fileName: 'roadmap.json',
     );
-    final file = File(outputFilePath);
-    file.writeAsStringSync(rm.toJson().toString());
+    if (outputFilePath != null) {
+      final file = File(outputFilePath);
+      file.writeAsStringSync(rm.toJson().toString());
+    }
   }
 
   void loadRoadmap() async {
