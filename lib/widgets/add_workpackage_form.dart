@@ -32,12 +32,13 @@ class _AddWorkpackageForm extends State<AddWorkpackageForm> {
     return Form(
       key: _editKey,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextFormField(
             initialValue: name,
             decoration: InputDecoration(
               border: UnderlineInputBorder(),
-              hintText: 'Workpackage name',
+              hintText: '...',
               labelText: 'Workpackage name:',
             ),
             maxLength: 32,
@@ -57,7 +58,7 @@ class _AddWorkpackageForm extends State<AddWorkpackageForm> {
             maxLines: null,
             decoration: InputDecoration(
               border: UnderlineInputBorder(),
-              hintText: 'Workpackage description',
+              hintText: '...',
               labelText: 'Description:',
             ),
             validator: (value) {
@@ -74,7 +75,7 @@ class _AddWorkpackageForm extends State<AddWorkpackageForm> {
             initialValue: '$storyPoints',
             decoration: InputDecoration(
               border: UnderlineInputBorder(),
-              hintText: 'Story Points',
+              hintText: '...',
               labelText: 'Story Points:',
             ),
             validator: (value) {

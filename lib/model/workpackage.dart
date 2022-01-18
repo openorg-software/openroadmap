@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:openroadmap/util/or_provider.dart';
+import 'package:openroadmap/widgets/edit_workpackage_form.dart';
 import 'package:provider/provider.dart';
 
 class Workpackage extends StatelessWidget {
@@ -58,7 +59,32 @@ class Workpackage extends StatelessWidget {
                         Icons.edit,
                         size: 30.0,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return SimpleDialog(
+                              contentPadding: EdgeInsets.all(10),
+                              backgroundColor:
+                                  Theme.of(context).dialogBackgroundColor,
+                              children: [
+                                ListTile(
+                                  title: Text(
+                                    'Edit "$name"',
+                                  ),
+                                  trailing: IconButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    icon: Icon(Icons.close),
+                                  ),
+                                  subtitle: EditWorkpackageForm(
+                                    workpackage: this,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
                     ),
                     IconButton(
                       onPressed: () {

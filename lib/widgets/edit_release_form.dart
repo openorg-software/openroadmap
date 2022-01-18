@@ -31,6 +31,7 @@ class _EditReleaseForm extends State<EditReleaseForm> {
     return Form(
       key: _editKey,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextFormField(
             initialValue: name,

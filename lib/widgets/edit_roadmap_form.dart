@@ -31,6 +31,7 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
     return Form(
       key: _editKey,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextFormField(
             initialValue: name,
