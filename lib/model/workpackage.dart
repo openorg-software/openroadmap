@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:openroadmap/util/or_provider.dart';
 import 'package:openroadmap/widgets/edit_workpackage_form.dart';
@@ -10,14 +12,18 @@ class Workpackage extends StatelessWidget {
   String description;
   Duration duration;
   int storyPoints;
+  List<String> users;
+  List<String> discussion = List<String>.empty(growable: true);
 
-  Workpackage(
-      {this.id,
-      this.releaseId,
-      this.name,
-      this.duration,
-      this.storyPoints,
-      this.description});
+  Workpackage({
+    this.id,
+    this.releaseId,
+    this.name,
+    this.duration,
+    this.storyPoints,
+    this.description,
+    this.discussion,
+  });
 
   factory Workpackage.invalid() {
     return Workpackage(
@@ -44,7 +50,7 @@ class Workpackage extends StatelessWidget {
             ),
             title: Text(
               name,
-              style: TextStyle(),
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: Column(
               children: [
@@ -57,20 +63,22 @@ class Workpackage extends StatelessWidget {
                     IconButton(
                       icon: Icon(
                         Icons.edit,
-                        size: 30.0,
+                        size: 25.0,
                       ),
                       onPressed: () {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
                             return SimpleDialog(
-                              contentPadding: EdgeInsets.all(10),
+                              contentPadding: EdgeInsets.all(8),
                               backgroundColor:
                                   Theme.of(context).dialogBackgroundColor,
                               children: [
                                 ListTile(
                                   title: Text(
                                     'Edit "$name"',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   trailing: IconButton(
                                     onPressed: () => Navigator.pop(context),
@@ -92,13 +100,15 @@ class Workpackage extends StatelessWidget {
                           context: context,
                           builder: (BuildContext context) {
                             return SimpleDialog(
-                              contentPadding: EdgeInsets.all(10),
+                              contentPadding: EdgeInsets.all(8),
                               backgroundColor:
                                   Theme.of(context).dialogBackgroundColor,
                               children: [
                                 ListTile(
                                   title: Text(
                                     'Delete "$name"',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   trailing: IconButton(
                                     onPressed: () => Navigator.pop(context),
@@ -125,7 +135,7 @@ class Workpackage extends StatelessWidget {
                       },
                       icon: Icon(
                         Icons.delete,
-                        size: 30.0,
+                        size: 25.0,
                       ),
                     ),
                   ],
@@ -139,12 +149,18 @@ class Workpackage extends StatelessWidget {
   }
 
   Map<String, dynamic> toJson() {
+    List discussionList = List.empty(growable: true);
+    for (String s in this.discussion) {
+      var encodedDiscussion = base64Encode(utf8.encode(s));
+      discussionList.add('"$encodedDiscussion"');
+    }
     return {
-      '"id"': '"$id"',
+      '"id"': id,
       '"name"': '"$name"',
       '"description"': '"$description"',
-      '"releaseId"': '"$releaseId"',
-      '"storyPoints"': storyPoints
+      '"releaseId"': releaseId,
+      '"storyPoints"': storyPoints,
+      '"discussion"': discussionList,
     };
   }
 
@@ -155,7 +171,23 @@ class Workpackage extends StatelessWidget {
       description: json['description'],
       releaseId: json['releaseId'],
       storyPoints: json['storyPoints'],
+      discussion: decodeDiscussion(json['discussion']),
     );
+  }
+
+  static List<String> decodeDiscussion(var json) {
+    List<String> discussion = List<String>.empty(growable: true);
+    if (json == null) {
+      return List<String>.empty(growable: true);
+    }
+    for (var j in json) {
+      if (j == null) {
+        continue;
+      }
+      var decodedDiscussion = base64Decode(j);
+      discussion.add(utf8.decode(decodedDiscussion));
+    }
+    return discussion;
   }
 
   static fromJsonList(var json) {

@@ -45,7 +45,7 @@ class Release extends StatelessWidget {
                 ),
                 title: Text(
                   '$name',
-                  style: TextStyle(),
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 subtitle: Column(
                   children: [
@@ -90,6 +90,8 @@ class Release extends StatelessWidget {
                                       child: ListTile(
                                         title: Text(
                                           'Add Workpackage',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
                                         ),
                                         trailing: IconButton(
                                           onPressed: () =>
@@ -125,6 +127,8 @@ class Release extends StatelessWidget {
                                     ListTile(
                                       title: Text(
                                         'Edit "$name"',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
                                       ),
                                       trailing: IconButton(
                                         onPressed: () => Navigator.pop(context),
@@ -157,6 +161,8 @@ class Release extends StatelessWidget {
                                     ListTile(
                                       title: Text(
                                         'Delete "$name"',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
                                       ),
                                       trailing: IconButton(
                                         onPressed: () => Navigator.pop(context),

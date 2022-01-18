@@ -110,6 +110,67 @@ class _EditWorkpackageForm extends State<EditWorkpackageForm> {
               },
             ),
           ),
+          Divider(),
+          Column(
+            children: [
+              Text(
+                'Discussion',
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+              Consumer<ORProvider>(builder: (context, orProvider, child) {
+                return Container(
+                  padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
+                  child: ElevatedButton(
+                    child: Text('Add discussion'),
+                    onPressed: () {
+                      widget.workpackage.discussion.add('New discussion');
+                      orProvider.rebuild();
+                    },
+                  ),
+                );
+              }),
+              Container(
+                height: 200,
+                width: 300,
+                child: Consumer<ORProvider>(
+                  builder: (context, orProvider, child) {
+                    return ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: widget.workpackage.discussion.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Row(
+                          children: [
+                            Container(
+                              width: 250,
+                              child: TextFormField(
+                                initialValue:
+                                    widget.workpackage.discussion[index],
+                                maxLines: null,
+                                keyboardType: TextInputType.multiline,
+                                onChanged: (value) {
+                                  widget.workpackage.discussion[index] = value;
+                                },
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                widget.workpackage.discussion.removeAt(index);
+                                orProvider.rebuild();
+                              },
+                              icon: Icon(Icons.delete),
+                            )
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          )
         ],
       ),
     );

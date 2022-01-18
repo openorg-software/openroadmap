@@ -103,6 +103,7 @@ class _AddWorkpackageForm extends State<AddWorkpackageForm> {
                         name: name,
                         storyPoints: storyPoints,
                         description: description,
+                        discussion: List<String>.empty(growable: true),
                       );
                       widget.release.addWorkpackage(wp);
                       orProvider.rebuild();

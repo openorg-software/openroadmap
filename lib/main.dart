@@ -244,7 +244,9 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
         return Scaffold(
           appBar: AppBar(
               title: Text(
-                  "OpenRoadmap ${orProvider.rm != null ? '- ${orProvider.rm.name}' : ''}"),
+                "OpenRoadmap ${orProvider.rm != null ? '- ${orProvider.rm.name}' : ''}",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
               actions: [
                 IconButton(
                   onPressed: () {
@@ -261,6 +263,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                               child: ListTile(
                                 title: Text(
                                   'Add Release',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 trailing: IconButton(
                                   onPressed: () => Navigator.pop(context),
@@ -294,6 +297,8 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                                     child: ListTile(
                                       title: Text(
                                         'Edit Roadmap',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
                                       ),
                                       trailing: IconButton(
                                         onPressed: () => Navigator.pop(context),
