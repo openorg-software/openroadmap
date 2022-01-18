@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/release.dart';
-import 'package:openroadmap/util/provider.dart';
+import 'package:openroadmap/util/or_provider.dart';
 import 'package:provider/provider.dart';
 
 class EditReleaseForm extends StatefulWidget {

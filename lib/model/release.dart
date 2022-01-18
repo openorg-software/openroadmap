@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/workpackage.dart';
-import 'package:openroadmap/util/provider.dart';
+import 'package:openroadmap/util/or_provider.dart';
 import 'package:openroadmap/widgets/add_workpackage_form.dart';
 import 'package:openroadmap/widgets/edit_release_form.dart';
 import 'package:provider/provider.dart';
 
 class Release extends StatelessWidget {
-  String id;
+  int id;
   String name;
   DateTime startDate;
   DateTime endDate;
   DateTime targetDate;
+  int highestWpId = 0;
 
   List<Workpackage> workpackages = List<Workpackage>.empty(growable: true);
 
@@ -25,7 +26,7 @@ class Release extends StatelessWidget {
 
   factory Release.invalid() {
     return Release(
-      id: '',
+      id: -1,
     );
   }
 
@@ -84,6 +85,43 @@ class Release extends StatelessWidget {
                                   backgroundColor:
                                       Theme.of(context).dialogBackgroundColor,
                                   children: [
+                                    Container(
+                                      width: 500,
+                                      child: ListTile(
+                                        title: Text(
+                                          'Add Workpackage',
+                                        ),
+                                        trailing: IconButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context),
+                                          icon: Icon(Icons.close),
+                                        ),
+                                        subtitle: AddWorkpackageForm(
+                                          release: this,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          icon: Icon(
+                            Icons.add,
+                            size: 30.0,
+                          ),
+                        ),
+                        Spacer(),
+                        IconButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return SimpleDialog(
+                                  contentPadding: EdgeInsets.all(10),
+                                  backgroundColor:
+                                      Theme.of(context).dialogBackgroundColor,
+                                  children: [
                                     ListTile(
                                       title: Text(
                                         'Edit "$name"',
@@ -116,19 +154,24 @@ class Release extends StatelessWidget {
                                   backgroundColor:
                                       Theme.of(context).dialogBackgroundColor,
                                   children: [
-                                    Container(
-                                      width: 500,
-                                      child: ListTile(
-                                        title: Text(
-                                          'Add Workpackage',
-                                        ),
-                                        trailing: IconButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
-                                          icon: Icon(Icons.close),
-                                        ),
-                                        subtitle: AddWorkpackageForm(
-                                          release: this,
+                                    ListTile(
+                                      title: Text(
+                                        'Delete "$name"',
+                                      ),
+                                      trailing: IconButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        icon: Icon(Icons.close),
+                                      ),
+                                      subtitle: Container(
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 16, 0, 0),
+                                        child: ElevatedButton(
+                                          child: Text('Confirm'),
+                                          onPressed: () {
+                                            orProvider.rm.deleteRelease(this);
+                                            orProvider.rebuild();
+                                            Navigator.pop(context);
+                                          },
                                         ),
                                       ),
                                     ),
@@ -138,7 +181,7 @@ class Release extends StatelessWidget {
                             );
                           },
                           icon: Icon(
-                            Icons.add,
+                            Icons.delete,
                             size: 30.0,
                           ),
                         ),
@@ -163,7 +206,7 @@ class Release extends StatelessWidget {
   }
 
   bool isValid() {
-    return id != '';
+    return id != -1;
   }
 
   String getStartDate() {
@@ -196,8 +239,13 @@ class Release extends StatelessWidget {
 
   void addWorkpackage(Workpackage wp) {
     wp.releaseId = this.id;
-    wp.id = ORProvider.getUniqueWorkpackageId();
+    this.highestWpId++;
+    wp.id = this.id * 10000 + (highestWpId - this.id * 10000);
     this.workpackages.add(wp);
+  }
+
+  void removeWorkpackage(Workpackage wp) {
+    this.workpackages.remove(wp);
   }
 
   Map<String, dynamic> toJson() {
@@ -206,7 +254,7 @@ class Release extends StatelessWidget {
       workpackages.add(wp.toJson());
     }
     return {
-      '"id"': '"$id"',
+      '"id"': id,
       '"name"': '"$name"',
       '"startDate"': '"$startDate"',
       '"targetDate"': '"$targetDate"',
@@ -233,8 +281,20 @@ class Release extends StatelessWidget {
       if (j == null) {
         continue;
       }
-      releases.add(Release.fromJson(j));
+      Release r = Release.fromJson(j);
+      r.determineHighestWpId();
+      releases.add(r);
     }
     return releases;
+  }
+
+  void determineHighestWpId() {
+    int highestWpId = 0;
+    for (Workpackage wp in workpackages) {
+      if (wp.id > highestWpId) {
+        highestWpId = wp.id;
+      }
+    }
+    this.highestWpId = highestWpId;
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/release.dart';
 import 'package:openroadmap/model/workpackage.dart';
-import 'package:openroadmap/or_theme.dart';
-import 'package:openroadmap/util/provider.dart';
+import 'package:openroadmap/util/or_provider.dart';
+import 'package:openroadmap/util/theme_provider.dart';
 import 'package:openroadmap/widgets/add_release_form.dart';
 import 'package:openroadmap/widgets/edit_roadmap_form.dart';
 import 'package:openroadmap/widgets/hover_widget.dart';
@@ -10,20 +10,25 @@ import 'package:provider/provider.dart';
 
 void main() => runApp(
       ChangeNotifierProvider(
-        create: (context) => ORProvider(),
-        child: App(),
+        create: (context) => ThemeProvider(),
+        child: ChangeNotifierProvider(
+          create: (context) => ORProvider(),
+          child: App(),
+        ),
       ),
     );
 
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'OpenRoadmap',
-      theme: ORTheme.getTheme(),
-      home: new OpenRoadmap(),
-      // home: DetailPage(),
-    );
+    return Consumer<ThemeProvider>(builder: (context, themeProvider, child) {
+      return MaterialApp(
+        title: 'OpenRoadmap',
+        theme: themeProvider.getTheme(),
+        home: OpenRoadmap(),
+        // home: DetailPage(),
+      );
+    });
   }
 }
 
@@ -38,8 +43,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
     super.initState();
   }
 
-  buildItemDragTarget(
-      String releaseId, String targetWorkpackageId, double height) {
+  buildItemDragTarget(int releaseId, int targetWorkpackageId, double height) {
     return Consumer<ORProvider>(builder: (context, orProvider, child) {
       return DragTarget<Workpackage>(
         // Ensure workpackage is only dropped on other workpackage or empty list
@@ -54,11 +58,6 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
         // Move the workpackage on the accepted location
         onAccept: (Workpackage wp) {
           setState(() {
-            print(
-                'Workpackage: ${wp.name} ${wp.id} - target: ${targetWorkpackageId}');
-
-            print(
-                'Workpackage Release ID: ${wp.releaseId} - releaseId: ${releaseId}');
             // Remove workpackage from old release
             orProvider.getReleaseById(wp.releaseId).workpackages.remove(wp);
             // Insert workpackage in new release at target location
@@ -74,6 +73,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                 .getReleaseById(wp.releaseId)
                 .workpackages
                 .insert(targetWpIndex == -1 ? 0 : targetWpIndex, wp);
+
             orProvider.rebuild();
           });
         },
@@ -122,12 +122,12 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
               feedback: HoverWidget(
                 child: Container(
                   // A header floating around
-                  width: ORTheme.tileWidth,
+                  width: ThemeProvider.tileWidth,
                   child: release,
                 ),
               ),
             ),
-            buildItemDragTarget(release.id, '', ORTheme.headerHeight),
+            buildItemDragTarget(release.id, 0, ThemeProvider.headerHeight),
             DragTarget<Release>(
               // Will accept others, but not himself
               onWillAccept: (Release incomingRelease) {
@@ -140,12 +140,19 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                   orProvider.rm.releases.removeAt(orProvider.rm.releases
                       .indexOf(orProvider.getReleaseById(incomingRelease.id)));
                   // Insert at new location
-                  String oldId = incomingRelease.id;
+                  int oldId = incomingRelease.id;
                   incomingRelease.id = release.id;
                   orProvider.getReleaseById(release.id).id = oldId;
-                  orProvider.rm.releases.insert(
-                      orProvider.rm.releases.indexOf(release) + 1,
-                      incomingRelease);
+                  if (release.id < incomingRelease.id) {
+                    orProvider.rm.releases.insert(
+                        orProvider.rm.releases.indexOf(release) + 1,
+                        incomingRelease);
+                  } else {
+                    orProvider.rm.releases.insert(
+                        orProvider.rm.releases.indexOf(release),
+                        incomingRelease);
+                  }
+
                   orProvider.rebuild();
                 });
               },
@@ -155,8 +162,8 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                 if (releases.isEmpty) {
                   // The area that accepts the draggable
                   return Container(
-                    height: ORTheme.headerHeight,
-                    width: ORTheme.tileWidth,
+                    height: ThemeProvider.headerHeight,
+                    width: ThemeProvider.tileWidth,
                   );
                 } else {
                   return Container(
@@ -165,8 +172,8 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                         width: 3,
                       ),
                     ),
-                    height: ORTheme.headerHeight,
-                    width: ORTheme.tileWidth,
+                    height: ThemeProvider.headerHeight,
+                    width: ThemeProvider.tileWidth,
                   );
                 }
               },
@@ -178,49 +185,55 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
   }
 
   buildKanbanList(Release release, List<Workpackage> items) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Column(
-        children: [
-          buildHeader(release),
-          release.workpackages.length > 0
-              ? ListView.builder(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: items.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    // A stack that provides:
-                    // * A draggable object
-                    // * An area for incoming draggables
-                    return Stack(
-                      children: [
-                        Draggable<Workpackage>(
-                          data: items[index],
-                          child: items[index],
-                          // A card waiting to be dragged
-                          childWhenDragging: Opacity(
-                            // The card that's left behind
-                            opacity: 0.2,
-                            child: items[index],
-                          ),
-                          feedback: Container(
-                            // A card floating around
-                            height: ORTheme.tileHeight,
-                            width: ORTheme.tileWidth,
-                            child: HoverWidget(
-                              child: items[index],
-                            ),
-                          ),
-                        ),
-                        buildItemDragTarget(
-                            release.id, items[index].id, ORTheme.tileHeight),
-                      ],
-                    );
-                  },
-                )
-              : Container(),
-        ],
-      ),
+    return Column(
+      children: [
+        buildHeader(release),
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                release.workpackages.length > 0
+                    ? ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: items.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          // A stack that provides:
+                          // * A draggable object
+                          // * An area for incoming draggables
+                          return Stack(
+                            children: [
+                              Draggable<Workpackage>(
+                                data: items[index],
+                                child: items[index],
+                                // A card waiting to be dragged
+                                childWhenDragging: Opacity(
+                                  // The card that's left behind
+                                  opacity: 0.2,
+                                  child: items[index],
+                                ),
+                                feedback: Container(
+                                  // The dragged workpackage
+                                  height: ThemeProvider.tileHeight + 50,
+                                  width: ThemeProvider.tileWidth,
+                                  child: HoverWidget(
+                                    child: items[index],
+                                  ),
+                                ),
+                              ),
+                              buildItemDragTarget(release.id, items[index].id,
+                                  ThemeProvider.tileHeight),
+                            ],
+                          );
+                        },
+                      )
+                    : Container(),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -307,8 +320,17 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                 ),
                 IconButton(
                   onPressed: () => orProvider.loadRoadmap(),
-                  icon: Icon(Icons.file_open),
+                  icon: Icon(Icons.upload_file),
                 ),
+                Consumer<ThemeProvider>(
+                    builder: (context, themeProvider, child) {
+                  return IconButton(
+                    onPressed: () => themeProvider.toggleDarkMode(),
+                    icon: themeProvider.darkMode
+                        ? Icon(Icons.wb_sunny)
+                        : Icon(Icons.dark_mode),
+                  );
+                }),
               ]),
           body: orProvider.rm != null
               ? SingleChildScrollView(
@@ -317,7 +339,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: orProvider.rm.releases.map((Release r) {
                       return Container(
-                        width: ORTheme.tileWidth,
+                        width: ThemeProvider.tileWidth,
                         child: buildKanbanList(r, r.workpackages),
                       );
                     }).toList(),

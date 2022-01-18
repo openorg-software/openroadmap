@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/roadmap.dart';
-import 'package:openroadmap/util/provider.dart';
+import 'package:openroadmap/util/or_provider.dart';
 import 'package:provider/provider.dart';
 
 class EditRoadmapForm extends StatefulWidget {
@@ -95,7 +95,8 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
                   onPressed: () {
                     if (_editKey.currentState.validate()) {
                       _editKey.currentState.save();
-                      widget.roadmap.sprintLength = Duration(days:sprintLength);
+                      widget.roadmap.sprintLength =
+                          Duration(days: sprintLength);
                       widget.roadmap.storyPointsPerSprint =
                           storyPointsPerSprint;
                       widget.roadmap.name = name;

@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,7 +16,7 @@ class ORProvider extends ChangeNotifier {
     releases: List<Release>.empty(growable: true),
   );
 
-  Release getReleaseById(String id) {
+  Release getReleaseById(int id) {
     for (Release r in rm.releases) {
       if (r.id == id) {
         return r;
@@ -26,8 +25,7 @@ class ORProvider extends ChangeNotifier {
     return Release.invalid();
   }
 
-  Workpackage getWorkpackageInReleaseById(
-      String releaseId, String workpackageId) {
+  Workpackage getWorkpackageInReleaseById(int releaseId, int workpackageId) {
     for (Release r in rm.releases) {
       if (r.id == releaseId) {
         for (Workpackage w in r.workpackages) {
@@ -83,21 +81,5 @@ class ORProvider extends ChangeNotifier {
 
   rebuild() {
     notifyListeners();
-  }
-
-  static final _chars =
-      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-  static Random _rnd = Random();
-
-  static String getRandomString(int length) =>
-      String.fromCharCodes(Iterable.generate(
-          length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
-
-  static String getUniqueWorkpackageId() {
-    return getRandomString(32);
-  }
-
-  static String getUniqueReleaseId() {
-    return getRandomString(32);
   }
 }

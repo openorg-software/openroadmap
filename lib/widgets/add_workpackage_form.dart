@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/release.dart';
 import 'package:openroadmap/model/workpackage.dart';
-import 'package:openroadmap/util/provider.dart';
+import 'package:openroadmap/util/or_provider.dart';
 import 'package:provider/provider.dart';
 
 class AddWorkpackageForm extends StatefulWidget {
@@ -40,6 +40,7 @@ class _AddWorkpackageForm extends State<AddWorkpackageForm> {
               hintText: 'Workpackage name',
               labelText: 'Workpackage name:',
             ),
+            maxLength: 32,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please insert workpackage name';

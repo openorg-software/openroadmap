@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:openroadmap/util/provider.dart';
+import 'package:openroadmap/util/or_provider.dart';
 import 'package:provider/provider.dart';
 
 class Workpackage extends StatelessWidget {
-  String id;
+  int id;
   String name;
-  String releaseId;
+  int releaseId;
   String description;
   Duration duration;
   int storyPoints;
@@ -20,12 +20,12 @@ class Workpackage extends StatelessWidget {
 
   factory Workpackage.invalid() {
     return Workpackage(
-      id: '',
+      id: -1,
     );
   }
 
   bool isValid() {
-    return id != '';
+    return id != -1;
   }
 
   @override
@@ -50,14 +50,61 @@ class Workpackage extends StatelessWidget {
                 Text('Story Points: $storyPoints'),
                 Text(
                     'Duration in Days: ~${orProvider.getDurationFromStoryPoints(storyPoints).inDays}'),
+                Row(
+                  children: [
+                    Spacer(),
+                    IconButton(
+                      icon: Icon(
+                        Icons.edit,
+                        size: 30.0,
+                      ),
+                      onPressed: () {},
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return SimpleDialog(
+                              contentPadding: EdgeInsets.all(10),
+                              backgroundColor:
+                                  Theme.of(context).dialogBackgroundColor,
+                              children: [
+                                ListTile(
+                                  title: Text(
+                                    'Delete "$name"',
+                                  ),
+                                  trailing: IconButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    icon: Icon(Icons.close),
+                                  ),
+                                  subtitle: Container(
+                                    padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
+                                    child: ElevatedButton(
+                                      child: Text('Confirm'),
+                                      onPressed: () {
+                                        orProvider
+                                            .getReleaseById(releaseId)
+                                            .removeWorkpackage(this);
+                                        orProvider.rebuild();
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      icon: Icon(
+                        Icons.delete,
+                        size: 30.0,
+                      ),
+                    ),
+                  ],
+                )
               ],
-            ),
-            trailing: IconButton(
-              icon: Icon(
-                Icons.edit,
-                size: 30.0,
-              ),
-              onPressed: () {},
             ),
           );
         }),

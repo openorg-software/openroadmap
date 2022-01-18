@@ -1,6 +1,5 @@
 import 'package:openroadmap/model/release.dart';
 import 'package:openroadmap/model/workpackage.dart';
-import 'package:openroadmap/util/provider.dart';
 
 class Roadmap {
   String name;
@@ -38,9 +37,13 @@ class Roadmap {
   }
 
   void addRelease(Release r) {
-    r.id = ORProvider.getUniqueReleaseId();
+    r.id = releases.length + 1;
     print('New release: ${r.id}');
     print('New release: ${this.releases}');
     this.releases.add(r);
+  }
+
+  void deleteRelease(Release r) {
+    this.releases.remove(r);
   }
 }
