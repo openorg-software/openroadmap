@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:openroadmap/model/user.dart';
 import 'package:openroadmap/util/base64_helper.dart';
 import 'package:openroadmap/util/or_provider.dart';
 import 'package:openroadmap/widgets/edit_userstory_form.dart';
@@ -13,7 +14,7 @@ class UserStory extends StatelessWidget {
   String description;
   late Duration duration;
   int storyPoints;
-  List<String> users;
+  List<User> users;
   List<String> discussion = List<String>.empty(growable: true);
 
   UserStory({
@@ -60,10 +61,37 @@ class UserStory extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             subtitle: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text('Story Points: $storyPoints'),
                 Text(
                     'Duration in Days: ~${orProvider.getDurationFromStoryPoints(storyPoints).inDays}'),
+                users.length > 0 ? Divider() : Container(),
+                users.length > 0 ? Text('Users:') : Container(),
+                users.length > 0
+                    ? Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+                        child: GridView.builder(
+                          itemCount: users.length,
+                          shrinkWrap: true,
+                          gridDelegate:
+                              new SliverGridDelegateWithMaxCrossAxisExtent(
+                                  //crossAxisCount: 4,
+                                  maxCrossAxisExtent: 80,
+                                  mainAxisSpacing: 0,
+                                  childAspectRatio: 2.5),
+                          itemBuilder: (BuildContext context, int index) {
+                            return Center(
+                              child: Chip(
+                                label: Text(users[index].name),
+                                labelPadding: EdgeInsets.fromLTRB(4, 0, 4, 0),
+                                backgroundColor: users[index].color,
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    : Container(),
                 Row(
                   children: [
                     Spacer(),
@@ -162,9 +190,8 @@ class UserStory extends StatelessWidget {
       discussionList.add('"$encodedDiscussion"');
     }
     List userList = List.empty(growable: true);
-    for (String s in this.users) {
-      var encodedUser = base64Encode(utf8.encode(s));
-      userList.add('"$encodedUser"');
+    for (User s in this.users) {
+      userList.add(s.toJson());
     }
     return {
       '"id"': id,
@@ -185,7 +212,7 @@ class UserStory extends StatelessWidget {
       releaseId: json['releaseId'],
       storyPoints: json['storyPoints'],
       discussion: Base64Helper.decodeListOfStringFromJson(json['discussion']),
-      users: Base64Helper.decodeListOfStringFromJson(json['users']),
+      users: User.fromJsonList(json['users']),
     );
   }
 

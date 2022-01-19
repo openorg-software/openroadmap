@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/release.dart';
 import 'package:openroadmap/model/roadmap.dart';
+import 'package:openroadmap/model/user.dart';
 import 'package:openroadmap/model/user_story.dart';
 
 class ORProvider extends ChangeNotifier {
@@ -14,7 +15,7 @@ class ORProvider extends ChangeNotifier {
     storyPointsPerSprint: 10,
     sprintLength: Duration(days: 14),
     releases: List<Release>.empty(growable: true),
-    users: List<String>.empty(growable: true),
+    users: List<User>.empty(growable: true),
     userDefinedStyle: '<style>\n' +
         '  ganttDiagram {\n' +
         '    task {\n' +
@@ -59,7 +60,7 @@ class ORProvider extends ChangeNotifier {
     return UserStory.invalid();
   }
 
-  void saveRoadmap() async {
+  void saveRoadmap(BuildContext context) async {
     rm.releases = rm.releases;
     String? outputFilePath = await FilePicker.platform.saveFile(
       dialogTitle: 'Save this roadmap:',
@@ -71,15 +72,24 @@ class ORProvider extends ChangeNotifier {
     if (outputFilePath != null) {
       final file = File(outputFilePath);
       file.writeAsStringSync(rm.toJson().toString());
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Saved: $outputFilePath')));
     }
   }
 
-  void loadRoadmap() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+  void loadRoadmap(BuildContext context) async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['json'],
+      dialogTitle: 'Load Roadmap',
+      lockParentWindow: true,
+    );
 
     if (result != null) {
       File file = File(result.files.single.path!);
       rm = Roadmap.fromJson(jsonDecode(file.readAsStringSync()));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Loaded: ${result.files.single.path}')));
       rebuild();
     } else {
       // User canceled the picker

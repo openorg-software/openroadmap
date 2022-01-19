@@ -48,6 +48,8 @@ class _ExportForm extends State<ExportForm> {
                 child: Text('Export'),
                 onPressed: () {
                   exporters['$dropdownValue']!.export(orProvider);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Exported using $dropdownValue')));
                   Navigator.pop(context);
                 },
               );

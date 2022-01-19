@@ -81,6 +81,8 @@ class _EditReleaseForm extends State<EditReleaseForm> {
                       widget.release.targetDate = targetDate;
                       widget.release.name = name;
                       orProvider.rebuild();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Saved release: $name')));
                       Navigator.pop(context);
                     }
                   },

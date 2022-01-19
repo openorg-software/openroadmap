@@ -44,6 +44,14 @@ class ThemeProvider extends ChangeNotifier {
         tertiary: Colors.grey,
         outline: Colors.grey,
       ),
+      chipTheme: ChipThemeData(
+        backgroundColor: Colors.white70,
+        labelStyle: TextStyle(color: Colors.black),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: Colors.white,
+        actionTextColor: Colors.black,
+      ),
       inputDecorationTheme: InputDecorationTheme(
         hintStyle: TextStyle(
           color: Colors.white70,

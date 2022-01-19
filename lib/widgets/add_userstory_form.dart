@@ -110,6 +110,8 @@ class _AddUserStoryForm extends State<AddUserStoryForm> {
                       );
                       widget.release.addUserStory(wp);
                       orProvider.rebuild();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Added user story: $name')));
                       Navigator.pop(context);
                     }
                   },

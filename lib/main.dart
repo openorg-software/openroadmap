@@ -215,10 +215,17 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                                 ),
                                 feedback: Container(
                                   // The dragged user story
-                                  height: ThemeProvider.tileHeight + 50,
+                                  height: 50,
                                   width: ThemeProvider.tileWidth,
                                   child: HoverWidget(
-                                    child: items[index],
+                                    child: Card(
+                                        child: ListTile(
+                                      title: Text(
+                                        items[index].name,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )),
                                   ),
                                 ),
                               ),
@@ -321,12 +328,12 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                     : Container(),
                 orProvider.rm != null
                     ? IconButton(
-                        onPressed: () => orProvider.saveRoadmap(),
+                        onPressed: () => orProvider.saveRoadmap(context),
                         icon: Icon(Icons.save),
                       )
                     : Container(),
                 IconButton(
-                  onPressed: () => orProvider.loadRoadmap(),
+                  onPressed: () => orProvider.loadRoadmap(context),
                   icon: Icon(Icons.upload_file),
                 ),
                 orProvider.rm != null

@@ -84,6 +84,8 @@ class _AddReleaseForm extends State<AddReleaseForm> {
                       );
                       orProvider.rm.addRelease(r);
                       orProvider.rebuild();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Added release: $name')));
                       Navigator.pop(context);
                     }
                   },

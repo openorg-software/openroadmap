@@ -103,12 +103,67 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                       widget.userStory.description = description;
                       widget.userStory.storyPoints = storyPoints;
                       orProvider.rebuild();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Saved user story.')));
                       Navigator.pop(context);
                     }
                   },
                 );
               },
             ),
+          ),
+          Divider(),
+          Column(
+            children: [
+              Text(
+                'Users',
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+              Container(
+                height: 200,
+                width: 300,
+                child: Consumer<ORProvider>(
+                  builder: (context, orProvider, child) {
+                    return Padding(
+                      padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        gridDelegate:
+                            new SliverGridDelegateWithMaxCrossAxisExtent(
+                                //crossAxisCount: 4,
+                                maxCrossAxisExtent: 140,
+                                mainAxisSpacing: 0,
+                                childAspectRatio: 3),
+                        itemCount: orProvider.rm.users.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ActionChip(
+                            avatar: widget.userStory.users
+                                    .contains(orProvider.rm.users[index])
+                                ? Icon(Icons.remove)
+                                : Icon(Icons.add),
+                            label: Text(orProvider.rm.users[index].name),
+                            backgroundColor: orProvider.rm.users[index].color,
+                            onPressed: () {
+                              if (widget.userStory.users
+                                  .contains(orProvider.rm.users[index])) {
+                                widget.userStory.users
+                                    .remove(orProvider.rm.users[index]);
+                              } else {
+                                widget.userStory.users
+                                    .add(orProvider.rm.users[index]);
+                              }
+                              orProvider.rebuild();
+                            },
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
           Divider(),
           Column(
@@ -157,7 +212,22 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                             ),
                             IconButton(
                               onPressed: () {
-                                widget.userStory.discussion.removeAt(index);
+                                String discussion =
+                                    widget.userStory.discussion[index];
+                                widget.userStory.discussion.remove(discussion);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Removed discussion.'),
+                                    action: SnackBarAction(
+                                      label: 'Revert',
+                                      onPressed: () {
+                                        widget.userStory.discussion
+                                            .add(discussion);
+                                      },
+                                    ),
+                                  ),
+                                );
+
                                 orProvider.rebuild();
                               },
                               icon: Icon(Icons.delete),

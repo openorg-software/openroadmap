@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:openroadmap/model/roadmap.dart';
+import 'package:openroadmap/model/user.dart';
 import 'package:openroadmap/util/or_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +18,6 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
   late int storyPointsPerSprint;
   late int sprintLength;
   late String style;
-
   final _editKey = GlobalKey<FormState>();
 
   @override
@@ -125,12 +126,124 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
                       widget.roadmap.name = name;
                       widget.roadmap.userDefinedStyle = style;
                       orProvider.rebuild();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Saved roadmap.')));
                       Navigator.pop(context);
                     }
                   },
                 );
               },
             ),
+          ),
+          Divider(),
+          Column(
+            children: [
+              Text(
+                'Users',
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+              Consumer<ORProvider>(builder: (context, orProvider, child) {
+                return Container(
+                  padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
+                  child: ElevatedButton(
+                    child: Text('Add user'),
+                    onPressed: () {
+                      widget.roadmap.users.add(
+                        User(
+                          name: 'New user',
+                          color: Color.fromARGB(255, 100, 100, 100),
+                        ),
+                      );
+                      orProvider.rebuild();
+                    },
+                  ),
+                );
+              }),
+              Container(
+                height: 200,
+                width: 350,
+                child: Consumer<ORProvider>(
+                  builder: (context, orProvider, child) {
+                    return ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: widget.roadmap.users.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Row(
+                          children: [
+                            Container(
+                              width: 250,
+                              child: TextFormField(
+                                initialValue: widget.roadmap.users[index].name,
+                                maxLines: null,
+                                keyboardType: TextInputType.multiline,
+                                onChanged: (value) {
+                                  widget.roadmap.users[index].name = value;
+                                },
+                              ),
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  Color pickerColor =
+                                      widget.roadmap.users[index].color;
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return SimpleDialog(
+                                        title: Text('Select Color'),
+                                        children: [
+                                          ColorPicker(
+                                              pickerColor: pickerColor,
+                                              onColorChanged: (color) {
+                                                widget.roadmap.users[index]
+                                                    .color = color;
+                                                orProvider.rebuild();
+                                              }),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                icon: Icon(
+                                  Icons.color_lens,
+                                  color: widget.roadmap.users[index].color,
+                                )),
+                            IconButton(
+                              onPressed: () {
+                                String user = widget.roadmap.users[index].name;
+                                widget.roadmap.users.remove(user);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Removed user: $user'),
+                                    action: SnackBarAction(
+                                      label: 'Revert',
+                                      onPressed: () {
+                                        widget.roadmap.users.add(
+                                          User(
+                                            name: user,
+                                            color: Color.fromARGB(
+                                                255, 100, 100, 100),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                );
+
+                                orProvider.rebuild();
+                              },
+                              icon: Icon(Icons.delete),
+                            )
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ],
       ),
