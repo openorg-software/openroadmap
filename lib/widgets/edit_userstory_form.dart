@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:openroadmap/model/workpackage.dart';
+import 'package:openroadmap/model/user_story.dart';
 import 'package:openroadmap/util/or_provider.dart';
 import 'package:provider/provider.dart';
 
-class EditWorkpackageForm extends StatefulWidget {
-  final Workpackage workpackage;
+class EditUserStoryForm extends StatefulWidget {
+  final UserStory userStory;
 
-  EditWorkpackageForm({this.workpackage});
+  EditUserStoryForm({this.userStory});
 
-  _EditWorkpackageForm createState() => _EditWorkpackageForm();
+  _EditUserStoryForm createState() => _EditUserStoryForm();
 }
 
-class _EditWorkpackageForm extends State<EditWorkpackageForm> {
+class _EditUserStoryForm extends State<EditUserStoryForm> {
   String name;
   String description;
   int storyPoints;
@@ -20,9 +20,9 @@ class _EditWorkpackageForm extends State<EditWorkpackageForm> {
 
   @override
   void initState() {
-    name = widget.workpackage.name;
-    description = widget.workpackage.description;
-    storyPoints = widget.workpackage.storyPoints;
+    name = widget.userStory.name;
+    description = widget.userStory.description;
+    storyPoints = widget.userStory.storyPoints;
     super.initState();
   }
 
@@ -38,12 +38,12 @@ class _EditWorkpackageForm extends State<EditWorkpackageForm> {
             decoration: InputDecoration(
               border: UnderlineInputBorder(),
               hintText: '...',
-              labelText: 'Workpackage name:',
+              labelText: 'User Story name:',
             ),
             maxLength: 32,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please insert workpackage name';
+                return 'Please insert user story name';
               }
               return null;
             },
@@ -62,7 +62,7 @@ class _EditWorkpackageForm extends State<EditWorkpackageForm> {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please insert workpackage description';
+                return 'Please insert user story description';
               }
               return null;
             },
@@ -99,9 +99,9 @@ class _EditWorkpackageForm extends State<EditWorkpackageForm> {
                     if (_editKey.currentState.validate()) {
                       _editKey.currentState.save();
 
-                      widget.workpackage.name = name;
-                      widget.workpackage.description = description;
-                      widget.workpackage.storyPoints = storyPoints;
+                      widget.userStory.name = name;
+                      widget.userStory.description = description;
+                      widget.userStory.storyPoints = storyPoints;
                       orProvider.rebuild();
                       Navigator.pop(context);
                     }
@@ -125,7 +125,7 @@ class _EditWorkpackageForm extends State<EditWorkpackageForm> {
                   child: ElevatedButton(
                     child: Text('Add discussion'),
                     onPressed: () {
-                      widget.workpackage.discussion.add('New discussion');
+                      widget.userStory.discussion.add('New discussion');
                       orProvider.rebuild();
                     },
                   ),
@@ -139,7 +139,7 @@ class _EditWorkpackageForm extends State<EditWorkpackageForm> {
                     return ListView.builder(
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
-                      itemCount: widget.workpackage.discussion.length,
+                      itemCount: widget.userStory.discussion.length,
                       itemBuilder: (BuildContext context, int index) {
                         return Row(
                           children: [
@@ -147,17 +147,17 @@ class _EditWorkpackageForm extends State<EditWorkpackageForm> {
                               width: 250,
                               child: TextFormField(
                                 initialValue:
-                                    widget.workpackage.discussion[index],
+                                    widget.userStory.discussion[index],
                                 maxLines: null,
                                 keyboardType: TextInputType.multiline,
                                 onChanged: (value) {
-                                  widget.workpackage.discussion[index] = value;
+                                  widget.userStory.discussion[index] = value;
                                 },
                               ),
                             ),
                             IconButton(
                               onPressed: () {
-                                widget.workpackage.discussion.removeAt(index);
+                                widget.userStory.discussion.removeAt(index);
                                 orProvider.rebuild();
                               },
                               icon: Icon(Icons.delete),

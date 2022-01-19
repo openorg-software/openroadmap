@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/release.dart';
 import 'package:openroadmap/model/roadmap.dart';
-import 'package:openroadmap/model/workpackage.dart';
+import 'package:openroadmap/model/user_story.dart';
 
 class ORProvider extends ChangeNotifier {
   Roadmap rm = Roadmap(
@@ -14,6 +14,27 @@ class ORProvider extends ChangeNotifier {
     storyPointsPerSprint: 10,
     sprintLength: Duration(days: 14),
     releases: List<Release>.empty(growable: true),
+    users: List<String>.empty(growable: true),
+    userDefinedStyle: '<style>\n' +
+        '  ganttDiagram {\n' +
+        '    task {\n' +
+        '    FontName Arial\n' +
+        '    FontColor black\n' +
+        '    FontSize 18\n' +
+        '    FontStyle bold\n' +
+        '    BackGroundColor #b3b3b3\n' +
+        '    LineColor black\n' +
+        '    }\n' +
+        '  arrow {\n' +
+        '    FontName Arial\n' +
+        '    FontColor black\n' +
+        '    FontSize 18\n' +
+        '    FontStyle bold\n' +
+        '    BackGroundColor black\n' +
+        '    LineColor black\n' +
+        '    }\n' +
+        '  }\n' +
+        '</style>\n',
   );
 
   Release getReleaseById(int id) {
@@ -25,17 +46,17 @@ class ORProvider extends ChangeNotifier {
     return Release.invalid();
   }
 
-  Workpackage getWorkpackageInReleaseById(int releaseId, int workpackageId) {
+  UserStory getUserStoryInReleaseById(int releaseId, int userStoryId) {
     for (Release r in rm.releases) {
       if (r.id == releaseId) {
-        for (Workpackage w in r.workpackages) {
-          if (w.id == workpackageId) {
+        for (UserStory w in r.userStories) {
+          if (w.id == userStoryId) {
             return w;
           }
         }
       }
     }
-    return Workpackage.invalid();
+    return UserStory.invalid();
   }
 
   void saveRoadmap() async {

@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/release.dart';
-import 'package:openroadmap/model/workpackage.dart';
+import 'package:openroadmap/model/user_story.dart';
 import 'package:openroadmap/util/or_provider.dart';
 import 'package:provider/provider.dart';
 
-class AddWorkpackageForm extends StatefulWidget {
+class AddUserStoryForm extends StatefulWidget {
   final Release release;
 
-  AddWorkpackageForm({this.release});
+  AddUserStoryForm({this.release});
 
-  _AddWorkpackageForm createState() => _AddWorkpackageForm();
+  _AddUserStoryForm createState() => _AddUserStoryForm();
 }
 
-class _AddWorkpackageForm extends State<AddWorkpackageForm> {
+class _AddUserStoryForm extends State<AddUserStoryForm> {
   String name;
   String description;
   int storyPoints;
@@ -39,12 +39,12 @@ class _AddWorkpackageForm extends State<AddWorkpackageForm> {
             decoration: InputDecoration(
               border: UnderlineInputBorder(),
               hintText: '...',
-              labelText: 'Workpackage name:',
+              labelText: 'User Story name:',
             ),
             maxLength: 32,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please insert workpackage name';
+                return 'Please insert user story name';
               }
               return null;
             },
@@ -63,7 +63,7 @@ class _AddWorkpackageForm extends State<AddWorkpackageForm> {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please insert workpackage description';
+                return 'Please insert user story description';
               }
               return null;
             },
@@ -99,13 +99,13 @@ class _AddWorkpackageForm extends State<AddWorkpackageForm> {
                   onPressed: () {
                     if (_editKey.currentState.validate()) {
                       _editKey.currentState.save();
-                      Workpackage wp = Workpackage(
+                      UserStory wp = UserStory(
                         name: name,
                         storyPoints: storyPoints,
                         description: description,
                         discussion: List<String>.empty(growable: true),
                       );
-                      widget.release.addWorkpackage(wp);
+                      widget.release.addUserStory(wp);
                       orProvider.rebuild();
                       Navigator.pop(context);
                     }

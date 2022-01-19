@@ -15,6 +15,7 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
   String name;
   int storyPointsPerSprint;
   int sprintLength;
+  String style;
 
   final _editKey = GlobalKey<FormState>();
 
@@ -23,6 +24,7 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
     name = widget.roadmap.name;
     storyPointsPerSprint = widget.roadmap.storyPointsPerSprint;
     sprintLength = widget.roadmap.sprintLength.inDays;
+    style = widget.roadmap.userDefinedStyle;
     super.initState();
   }
 
@@ -87,6 +89,26 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
               this.sprintLength = int.parse(text);
             },
           ),
+          Divider(),
+          TextFormField(
+            initialValue: style,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            decoration: InputDecoration(
+              border: UnderlineInputBorder(),
+              hintText: '...',
+              labelText: 'PlantUML Gantt Chart Style:',
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please insert style';
+              }
+              return null;
+            },
+            onSaved: (text) {
+              this.style = text;
+            },
+          ),
           Container(
             padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
             child: Consumer<ORProvider>(
@@ -101,6 +123,7 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
                       widget.roadmap.storyPointsPerSprint =
                           storyPointsPerSprint;
                       widget.roadmap.name = name;
+                      widget.roadmap.userDefinedStyle = style;
                       orProvider.rebuild();
                       Navigator.pop(context);
                     }

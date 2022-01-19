@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:openroadmap/export/plantuml_exporter.dart';
 import 'package:openroadmap/model/release.dart';
-import 'package:openroadmap/model/workpackage.dart';
+import 'package:openroadmap/model/user_story.dart';
 import 'package:openroadmap/util/or_provider.dart';
 import 'package:openroadmap/util/theme_provider.dart';
 import 'package:openroadmap/widgets/add_release_form.dart';
 import 'package:openroadmap/widgets/edit_roadmap_form.dart';
+import 'package:openroadmap/widgets/export_form.dart';
 import 'package:openroadmap/widgets/hover_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -44,43 +44,42 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
     super.initState();
   }
 
-  buildItemDragTarget(int releaseId, int targetWorkpackageId, double height) {
+  buildItemDragTarget(int releaseId, int targetUserStoryId, double height) {
     return Consumer<ORProvider>(builder: (context, orProvider, child) {
-      return DragTarget<Workpackage>(
-        // Ensure workpackage is only dropped on other workpackage or empty list
-        onWillAccept: (Workpackage data) {
-          return orProvider.getReleaseById(releaseId).workpackages.isEmpty ||
+      return DragTarget<UserStory>(
+        // Ensure user story is only dropped on other user story or empty list
+        onWillAccept: (UserStory data) {
+          return orProvider.getReleaseById(releaseId).userStories.isEmpty ||
               data.id !=
                   orProvider
-                      .getWorkpackageInReleaseById(
-                          releaseId, targetWorkpackageId)
+                      .getUserStoryInReleaseById(releaseId, targetUserStoryId)
                       .id;
         },
-        // Move the workpackage on the accepted location
-        onAccept: (Workpackage wp) {
+        // Move the user story on the accepted location
+        onAccept: (UserStory wp) {
           setState(() {
-            // Remove workpackage from old release
-            orProvider.getReleaseById(wp.releaseId).workpackages.remove(wp);
-            // Insert workpackage in new release at target location
+            // Remove user story from old release
+            orProvider.getReleaseById(wp.releaseId).userStories.remove(wp);
+            // Insert user story in new release at target location
             // 1. Set new releaseId
             wp.releaseId = releaseId;
             // 2. Determine index for insertion
             int targetWpIndex = orProvider
                 .getReleaseById(releaseId)
-                .workpackages
-                .indexOf(orProvider.getWorkpackageInReleaseById(
-                    releaseId, targetWorkpackageId));
+                .userStories
+                .indexOf(orProvider.getUserStoryInReleaseById(
+                    releaseId, targetUserStoryId));
             orProvider
                 .getReleaseById(wp.releaseId)
-                .workpackages
+                .userStories
                 .insert(targetWpIndex == -1 ? 0 : targetWpIndex, wp);
 
             orProvider.rebuild();
           });
         },
-        builder: (BuildContext context, List<Workpackage> workpackages,
+        builder: (BuildContext context, List<UserStory> userStories,
             List<dynamic> rejectedData) {
-          if (workpackages.isEmpty) {
+          if (userStories.isEmpty) {
             // The area that accepts the draggable
             return Container(
               height: height,
@@ -92,7 +91,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                 Container(
                   height: height,
                 ),
-                ...workpackages.map((Workpackage item) {
+                ...userStories.map((UserStory item) {
                   return Opacity(
                     opacity: 0.5,
                     child: item,
@@ -185,7 +184,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
     );
   }
 
-  buildKanbanList(Release release, List<Workpackage> items) {
+  buildKanbanList(Release release, List<UserStory> items) {
     return Column(
       children: [
         buildHeader(release),
@@ -194,7 +193,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
             scrollDirection: Axis.vertical,
             child: Column(
               children: [
-                release.workpackages.length > 0
+                release.userStories.length > 0
                     ? ListView.builder(
                         scrollDirection: Axis.vertical,
                         shrinkWrap: true,
@@ -205,7 +204,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                           // * An area for incoming draggables
                           return Stack(
                             children: [
-                              Draggable<Workpackage>(
+                              Draggable<UserStory>(
                                 data: items[index],
                                 child: items[index],
                                 // A card waiting to be dragged
@@ -215,7 +214,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                                   child: items[index],
                                 ),
                                 feedback: Container(
-                                  // The dragged workpackage
+                                  // The dragged user story
                                   height: ThemeProvider.tileHeight + 50,
                                   width: ThemeProvider.tileWidth,
                                   child: HoverWidget(
@@ -320,21 +319,50 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                         ),
                       )
                     : Container(),
-                IconButton(
-                  onPressed: () => orProvider.saveRoadmap(),
-                  icon: Icon(Icons.save),
-                ),
+                orProvider.rm != null
+                    ? IconButton(
+                        onPressed: () => orProvider.saveRoadmap(),
+                        icon: Icon(Icons.save),
+                      )
+                    : Container(),
                 IconButton(
                   onPressed: () => orProvider.loadRoadmap(),
                   icon: Icon(Icons.upload_file),
                 ),
-                IconButton(
-                  onPressed: () {
-                    PlantUMLExporter exporter = PlantUMLExporter();
-                    exporter.export(orProvider);
-                  },
-                  icon: Icon(Icons.share),
-                ),
+                orProvider.rm != null
+                    ? IconButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return SimpleDialog(
+                                contentPadding: EdgeInsets.all(10),
+                                backgroundColor:
+                                    Theme.of(context).dialogBackgroundColor,
+                                children: [
+                                  Container(
+                                    width: 500,
+                                    child: ListTile(
+                                      title: Text(
+                                        'Export Roadmap',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      trailing: IconButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        icon: Icon(Icons.close),
+                                      ),
+                                      subtitle: ExportForm(),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        icon: Icon(Icons.share),
+                      )
+                    : Container(),
                 Consumer<ThemeProvider>(
                     builder: (context, themeProvider, child) {
                   return IconButton(
@@ -353,7 +381,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                     children: orProvider.rm.releases.map((Release r) {
                       return Container(
                         width: ThemeProvider.tileWidth,
-                        child: buildKanbanList(r, r.workpackages),
+                        child: buildKanbanList(r, r.userStories),
                       );
                     }).toList(),
                   ),

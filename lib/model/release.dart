@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:openroadmap/model/workpackage.dart';
+import 'package:openroadmap/model/user_story.dart';
 import 'package:openroadmap/util/or_provider.dart';
-import 'package:openroadmap/widgets/add_workpackage_form.dart';
+import 'package:openroadmap/widgets/add_userstory_form.dart';
 import 'package:openroadmap/widgets/edit_release_form.dart';
 import 'package:provider/provider.dart';
 
@@ -11,9 +11,9 @@ class Release extends StatelessWidget {
   DateTime startDate;
   DateTime endDate;
   DateTime targetDate;
-  int highestWpId = 0;
+  int highestUsId = 0;
 
-  List<Workpackage> workpackages = List<Workpackage>.empty(growable: true);
+  List<UserStory> userStories = List<UserStory>.empty(growable: true);
 
   Release(
       {Key key,
@@ -21,13 +21,119 @@ class Release extends StatelessWidget {
       this.name,
       this.startDate,
       this.targetDate,
-      this.workpackages})
+      this.userStories})
       : super(key: key);
+
+  Map<String, dynamic> toJson() {
+    List userStories = List.empty(growable: true);
+    for (UserStory wp in this.userStories) {
+      userStories.add(wp.toJson());
+    }
+    return {
+      '"id"': id,
+      '"name"': '"$name"',
+      '"startDate"': '"$startDate"',
+      '"targetDate"': '"$targetDate"',
+      '"userStories"': userStories
+    };
+  }
+
+  factory Release.fromJson(var json) {
+    return Release(
+      id: json['id'],
+      name: json['name'],
+      startDate: DateTime.parse(json['startDate']),
+      targetDate: DateTime.parse(json['targetDate']),
+      userStories: UserStory.fromJsonList(json['userStories']),
+    );
+  }
+
+  // Build a list of releases from a JSON array
+  static fromJsonList(var json) {
+    List<Release> releases = List<Release>.empty(growable: true);
+    if (json == null) {
+      return List<Release>.empty(growable: true);
+    }
+    for (var j in json) {
+      if (j == null) {
+        continue;
+      }
+      Release r = Release.fromJson(j);
+      r.determineHighestUSId();
+      releases.add(r);
+    }
+    return releases;
+  }
 
   factory Release.invalid() {
     return Release(
       id: -1,
     );
+  }
+
+  bool isValid() {
+    return id != -1;
+  }
+
+  int getStoryPoints() {
+    int sum = 0;
+    for (UserStory wp in userStories) {
+      sum = sum + wp.storyPoints;
+    }
+    return sum;
+  }
+
+  String getStartDate() {
+    String day = startDate.day < 10 ? '0${startDate.day}' : '${startDate.day}';
+    String month =
+        startDate.month < 10 ? '0${startDate.month}' : '${startDate.month}';
+    return '$day.$month.${startDate.year}';
+  }
+
+  String getTargetDate() {
+    String day =
+        targetDate.day < 10 ? '0${targetDate.day}' : '${targetDate.day}';
+    String month =
+        targetDate.month < 10 ? '0${targetDate.month}' : '${targetDate.month}';
+    return '$day.$month.${targetDate.year}';
+  }
+
+  DateTime getEndDate(ORProvider orProvider) {
+    return startDate
+        .add(orProvider.getDurationFromStoryPoints(getStoryPoints()));
+  }
+
+  // Get the end date as string
+  String getEndDateString(ORProvider orProvider) {
+    DateTime endDate = getEndDate(orProvider);
+    String day = endDate.day < 10 ? '0${endDate.day}' : '${endDate.day}';
+    String month =
+        endDate.month < 10 ? '0${endDate.month}' : '${endDate.month}';
+    return '$day.$month.${endDate.year}';
+  }
+
+  // Add given user story
+  void addUserStory(UserStory us) {
+    us.releaseId = this.id;
+    this.highestUsId++;
+    us.id = this.id * 10000 + (highestUsId - this.id * 10000);
+    this.userStories.add(us);
+  }
+
+  // Remove given user story
+  void removeUserStory(UserStory us) {
+    this.userStories.remove(us);
+  }
+
+  // Figure out the highest user story id
+  void determineHighestUSId() {
+    int highestUsId = 0;
+    for (UserStory wp in userStories) {
+      if (wp.id > highestUsId) {
+        highestUsId = wp.id;
+      }
+    }
+    this.highestUsId = highestUsId;
   }
 
   @override
@@ -89,7 +195,7 @@ class Release extends StatelessWidget {
                                       width: 500,
                                       child: ListTile(
                                         title: Text(
-                                          'Add Workpackage',
+                                          'Add User Story',
                                           style: TextStyle(
                                               fontWeight: FontWeight.bold),
                                         ),
@@ -98,7 +204,7 @@ class Release extends StatelessWidget {
                                               Navigator.pop(context),
                                           icon: Icon(Icons.close),
                                         ),
-                                        subtitle: AddWorkpackageForm(
+                                        subtitle: AddUserStoryForm(
                                           release: this,
                                         ),
                                       ),
@@ -201,106 +307,5 @@ class Release extends StatelessWidget {
         );
       },
     );
-  }
-
-  int getStoryPoints() {
-    int sum = 0;
-    for (Workpackage wp in workpackages) {
-      sum = sum + wp.storyPoints;
-    }
-    return sum;
-  }
-
-  bool isValid() {
-    return id != -1;
-  }
-
-  String getStartDate() {
-    String day = startDate.day < 10 ? '0${startDate.day}' : '${startDate.day}';
-    String month =
-        startDate.month < 10 ? '0${startDate.month}' : '${startDate.month}';
-    return '$day.$month.${startDate.year}';
-  }
-
-  String getTargetDate() {
-    String day =
-        targetDate.day < 10 ? '0${targetDate.day}' : '${targetDate.day}';
-    String month =
-        targetDate.month < 10 ? '0${targetDate.month}' : '${targetDate.month}';
-    return '$day.$month.${targetDate.year}';
-  }
-
-  DateTime getEndDate(ORProvider orProvider) {
-    return startDate
-        .add(orProvider.getDurationFromStoryPoints(getStoryPoints()));
-  }
-
-  String getEndDateString(ORProvider orProvider) {
-    DateTime endDate = getEndDate(orProvider);
-    String day = endDate.day < 10 ? '0${endDate.day}' : '${endDate.day}';
-    String month =
-        endDate.month < 10 ? '0${endDate.month}' : '${endDate.month}';
-    return '$day.$month.${endDate.year}';
-  }
-
-  void addWorkpackage(Workpackage wp) {
-    wp.releaseId = this.id;
-    this.highestWpId++;
-    wp.id = this.id * 10000 + (highestWpId - this.id * 10000);
-    this.workpackages.add(wp);
-  }
-
-  void removeWorkpackage(Workpackage wp) {
-    this.workpackages.remove(wp);
-  }
-
-  Map<String, dynamic> toJson() {
-    List workpackages = List.empty(growable: true);
-    for (Workpackage wp in this.workpackages) {
-      workpackages.add(wp.toJson());
-    }
-    return {
-      '"id"': id,
-      '"name"': '"$name"',
-      '"startDate"': '"$startDate"',
-      '"targetDate"': '"$targetDate"',
-      '"workPackages"': workpackages
-    };
-  }
-
-  factory Release.fromJson(var json) {
-    return Release(
-      id: json['id'],
-      name: json['name'],
-      startDate: DateTime.parse(json['startDate']),
-      targetDate: DateTime.parse(json['targetDate']),
-      workpackages: Workpackage.fromJsonList(json['workPackages']),
-    );
-  }
-
-  static fromJsonList(var json) {
-    List<Release> releases = List<Release>.empty(growable: true);
-    if (json == null) {
-      return List<Release>.empty(growable: true);
-    }
-    for (var j in json) {
-      if (j == null) {
-        continue;
-      }
-      Release r = Release.fromJson(j);
-      r.determineHighestWpId();
-      releases.add(r);
-    }
-    return releases;
-  }
-
-  void determineHighestWpId() {
-    int highestWpId = 0;
-    for (Workpackage wp in workpackages) {
-      if (wp.id > highestWpId) {
-        highestWpId = wp.id;
-      }
-    }
-    this.highestWpId = highestWpId;
   }
 }

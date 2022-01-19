@@ -1,11 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:openroadmap/util/base64_helper.dart';
 import 'package:openroadmap/util/or_provider.dart';
-import 'package:openroadmap/widgets/edit_workpackage_form.dart';
+import 'package:openroadmap/widgets/edit_userstory_form.dart';
 import 'package:provider/provider.dart';
 
-class Workpackage extends StatelessWidget {
+class UserStory extends StatelessWidget {
   int id;
   String name;
   int releaseId;
@@ -15,7 +16,7 @@ class Workpackage extends StatelessWidget {
   List<String> users;
   List<String> discussion = List<String>.empty(growable: true);
 
-  Workpackage({
+  UserStory({
     this.id,
     this.releaseId,
     this.name,
@@ -25,8 +26,8 @@ class Workpackage extends StatelessWidget {
     this.discussion,
   });
 
-  factory Workpackage.invalid() {
-    return Workpackage(
+  factory UserStory.invalid() {
+    return UserStory(
       id: -1,
     );
   }
@@ -84,8 +85,8 @@ class Workpackage extends StatelessWidget {
                                     onPressed: () => Navigator.pop(context),
                                     icon: Icon(Icons.close),
                                   ),
-                                  subtitle: EditWorkpackageForm(
-                                    workpackage: this,
+                                  subtitle: EditUserStoryForm(
+                                    userStory: this,
                                   ),
                                 ),
                               ],
@@ -121,7 +122,7 @@ class Workpackage extends StatelessWidget {
                                       onPressed: () {
                                         orProvider
                                             .getReleaseById(releaseId)
-                                            .removeWorkpackage(this);
+                                            .removeUserStory(this);
                                         orProvider.rebuild();
                                         Navigator.pop(context);
                                       },
@@ -164,43 +165,28 @@ class Workpackage extends StatelessWidget {
     };
   }
 
-  factory Workpackage.fromJson(var json) {
-    return Workpackage(
+  factory UserStory.fromJson(var json) {
+    return UserStory(
       id: json['id'],
       name: json['name'],
       description: json['description'],
       releaseId: json['releaseId'],
       storyPoints: json['storyPoints'],
-      discussion: decodeDiscussion(json['discussion']),
+      discussion: Base64Helper.decodeListOfStringFromJson(json['discussion']),
     );
   }
 
-  static List<String> decodeDiscussion(var json) {
-    List<String> discussion = List<String>.empty(growable: true);
-    if (json == null) {
-      return List<String>.empty(growable: true);
-    }
-    for (var j in json) {
-      if (j == null) {
-        continue;
-      }
-      var decodedDiscussion = base64Decode(j);
-      discussion.add(utf8.decode(decodedDiscussion));
-    }
-    return discussion;
-  }
-
   static fromJsonList(var json) {
-    List<Workpackage> workpackages = List<Workpackage>.empty(growable: true);
+    List<UserStory> userStories = List<UserStory>.empty(growable: true);
     if (json == null) {
-      return List<Workpackage>.empty(growable: true);
+      return List<UserStory>.empty(growable: true);
     }
     for (var j in json) {
       if (j == null) {
         continue;
       }
-      workpackages.add(Workpackage.fromJson(j));
+      userStories.add(UserStory.fromJson(j));
     }
-    return workpackages;
+    return userStories;
   }
 }

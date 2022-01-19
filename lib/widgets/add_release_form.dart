@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/release.dart';
-import 'package:openroadmap/model/workpackage.dart';
+import 'package:openroadmap/model/user_story.dart';
 import 'package:openroadmap/util/or_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -79,7 +79,7 @@ class _AddReleaseForm extends State<AddReleaseForm> {
                         name: name,
                         startDate: startDate,
                         targetDate: targetDate,
-                        workpackages: List<Workpackage>.empty(growable: true),
+                        userStories: List<UserStory>.empty(growable: true),
                       );
                       orProvider.rm.addRelease(r);
                       orProvider.rebuild();
