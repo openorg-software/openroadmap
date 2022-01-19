@@ -9,20 +9,18 @@ class Release extends StatelessWidget {
   int id;
   String name;
   DateTime startDate;
-  DateTime endDate;
+  late DateTime endDate;
   DateTime targetDate;
   int highestUsId = 0;
 
   List<UserStory> userStories = List<UserStory>.empty(growable: true);
 
   Release(
-      {Key key,
-      this.id,
-      this.name,
-      this.startDate,
-      this.targetDate,
-      this.userStories})
-      : super(key: key);
+      {required this.id,
+      required this.name,
+      required this.startDate,
+      required this.targetDate,
+      required this.userStories});
 
   Map<String, dynamic> toJson() {
     List userStories = List.empty(growable: true);
@@ -68,6 +66,10 @@ class Release extends StatelessWidget {
   factory Release.invalid() {
     return Release(
       id: -1,
+      name: '',
+      targetDate: DateTime(2022),
+      startDate: DateTime(2022),
+      userStories: [],
     );
   }
 
@@ -112,11 +114,13 @@ class Release extends StatelessWidget {
     return '$day.$month.${endDate.year}';
   }
 
+  int getNextUserStoryId() {
+    this.highestUsId++;
+    return this.id * 10000 + (highestUsId - this.id * 10000);
+  }
+
   // Add given user story
   void addUserStory(UserStory us) {
-    us.releaseId = this.id;
-    this.highestUsId++;
-    us.id = this.id * 10000 + (highestUsId - this.id * 10000);
     this.userStories.add(us);
   }
 

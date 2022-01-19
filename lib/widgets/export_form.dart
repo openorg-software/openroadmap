@@ -12,7 +12,7 @@ class ExportForm extends StatefulWidget {
 
 class _ExportForm extends State<ExportForm> {
   Map<String, Exporter> exporters = {'PlantUMLExporter': PlantUMLExporter()};
-  String dropdownValue;
+  late String dropdownValue;
 
   @override
   void initState() {
@@ -35,9 +35,9 @@ class _ExportForm extends State<ExportForm> {
               );
             }).toList(),
             value: dropdownValue,
-            onChanged: (String newValue) {
+            onChanged: (newValue) {
               setState(() {
-                dropdownValue = newValue;
+                dropdownValue = newValue!;
               });
             }),
         Container(
@@ -47,7 +47,7 @@ class _ExportForm extends State<ExportForm> {
               return ElevatedButton(
                 child: Text('Export'),
                 onPressed: () {
-                  exporters['$dropdownValue'].export(orProvider);
+                  exporters['$dropdownValue']!.export(orProvider);
                   Navigator.pop(context);
                 },
               );

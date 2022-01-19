@@ -7,15 +7,15 @@ import 'package:provider/provider.dart';
 class AddUserStoryForm extends StatefulWidget {
   final Release release;
 
-  AddUserStoryForm({this.release});
+  AddUserStoryForm({required this.release});
 
   _AddUserStoryForm createState() => _AddUserStoryForm();
 }
 
 class _AddUserStoryForm extends State<AddUserStoryForm> {
-  String name;
-  String description;
-  int storyPoints;
+  late String name;
+  late String description;
+  late int storyPoints;
 
   final _editKey = GlobalKey<FormState>();
 
@@ -49,7 +49,7 @@ class _AddUserStoryForm extends State<AddUserStoryForm> {
               return null;
             },
             onSaved: (text) {
-              this.name = text;
+              this.name = text!;
             },
           ),
           TextFormField(
@@ -68,7 +68,7 @@ class _AddUserStoryForm extends State<AddUserStoryForm> {
               return null;
             },
             onSaved: (text) {
-              this.description = text;
+              this.description = text!;
             },
           ),
           TextFormField(
@@ -87,7 +87,7 @@ class _AddUserStoryForm extends State<AddUserStoryForm> {
               return null;
             },
             onSaved: (text) {
-              this.storyPoints = int.parse(text);
+              this.storyPoints = int.parse(text!);
             },
           ),
           Container(
@@ -97,13 +97,16 @@ class _AddUserStoryForm extends State<AddUserStoryForm> {
                 return ElevatedButton(
                   child: Text('Save'),
                   onPressed: () {
-                    if (_editKey.currentState.validate()) {
-                      _editKey.currentState.save();
+                    if (_editKey.currentState!.validate()) {
+                      _editKey.currentState!.save();
                       UserStory wp = UserStory(
+                        id: widget.release.getNextUserStoryId(),
+                        releaseId: widget.release.id,
                         name: name,
                         storyPoints: storyPoints,
                         description: description,
-                        discussion: List<String>.empty(growable: true),
+                        discussion: [],
+                        users: [],
                       );
                       widget.release.addUserStory(wp);
                       orProvider.rebuild();

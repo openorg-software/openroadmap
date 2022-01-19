@@ -1,24 +1,21 @@
 import 'package:openroadmap/model/release.dart';
-import 'package:openroadmap/model/user_story.dart';
 import 'package:openroadmap/util/base64_helper.dart';
 
 class Roadmap {
   String name;
   List<Release> releases;
-  List<UserStory> unassignedUserStories;
   int storyPointsPerSprint;
   Duration sprintLength;
   List<String> users;
   String userDefinedStyle;
 
   Roadmap({
-    this.name,
-    this.releases,
-    this.unassignedUserStories,
-    this.storyPointsPerSprint,
-    this.sprintLength,
-    this.users,
-    this.userDefinedStyle,
+    required this.name,
+    required this.releases,
+    required this.storyPointsPerSprint,
+    required this.sprintLength,
+    required this.users,
+    required this.userDefinedStyle,
   });
 
   factory Roadmap.fromJson(var json) {
@@ -52,8 +49,11 @@ class Roadmap {
     };
   }
 
+  int getNextReleaseId() {
+    return releases.length + 1;
+  }
+
   void addRelease(Release r) {
-    r.id = releases.length + 1;
     this.releases.add(r);
   }
 

@@ -6,16 +6,16 @@ import 'package:provider/provider.dart';
 class EditRoadmapForm extends StatefulWidget {
   final Roadmap roadmap;
 
-  EditRoadmapForm({this.roadmap});
+  EditRoadmapForm({required this.roadmap});
 
   _EditRoadmapForm createState() => _EditRoadmapForm();
 }
 
 class _EditRoadmapForm extends State<EditRoadmapForm> {
-  String name;
-  int storyPointsPerSprint;
-  int sprintLength;
-  String style;
+  late String name;
+  late int storyPointsPerSprint;
+  late int sprintLength;
+  late String style;
 
   final _editKey = GlobalKey<FormState>();
 
@@ -67,7 +67,7 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
               return null;
             },
             onSaved: (text) {
-              this.storyPointsPerSprint = int.parse(text);
+              this.storyPointsPerSprint = int.parse(text!);
             },
           ),
           TextFormField(
@@ -86,7 +86,7 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
               return null;
             },
             onSaved: (text) {
-              this.sprintLength = int.parse(text);
+              this.sprintLength = int.parse(text!);
             },
           ),
           Divider(),
@@ -106,7 +106,7 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
               return null;
             },
             onSaved: (text) {
-              this.style = text;
+              this.style = text!;
             },
           ),
           Container(
@@ -116,8 +116,8 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
                 return ElevatedButton(
                   child: Text('Save'),
                   onPressed: () {
-                    if (_editKey.currentState.validate()) {
-                      _editKey.currentState.save();
+                    if (_editKey.currentState!.validate()) {
+                      _editKey.currentState!.save();
                       widget.roadmap.sprintLength =
                           Duration(days: sprintLength);
                       widget.roadmap.storyPointsPerSprint =

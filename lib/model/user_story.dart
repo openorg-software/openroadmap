@@ -11,24 +11,30 @@ class UserStory extends StatelessWidget {
   String name;
   int releaseId;
   String description;
-  Duration duration;
+  late Duration duration;
   int storyPoints;
   List<String> users;
   List<String> discussion = List<String>.empty(growable: true);
 
   UserStory({
-    this.id,
-    this.releaseId,
-    this.name,
-    this.duration,
-    this.storyPoints,
-    this.description,
-    this.discussion,
+    required this.id,
+    required this.releaseId,
+    required this.name,
+    required this.storyPoints,
+    required this.description,
+    required this.discussion,
+    required this.users,
   });
 
   factory UserStory.invalid() {
     return UserStory(
       id: -1,
+      name: '',
+      description: '',
+      storyPoints: -1,
+      discussion: [],
+      releaseId: -1,
+      users: [],
     );
   }
 
@@ -155,6 +161,11 @@ class UserStory extends StatelessWidget {
       var encodedDiscussion = base64Encode(utf8.encode(s));
       discussionList.add('"$encodedDiscussion"');
     }
+    List userList = List.empty(growable: true);
+    for (String s in this.users) {
+      var encodedUser = base64Encode(utf8.encode(s));
+      userList.add('"$encodedUser"');
+    }
     return {
       '"id"': id,
       '"name"': '"$name"',
@@ -162,6 +173,7 @@ class UserStory extends StatelessWidget {
       '"releaseId"': releaseId,
       '"storyPoints"': storyPoints,
       '"discussion"': discussionList,
+      '"users"': userList,
     };
   }
 
@@ -173,6 +185,7 @@ class UserStory extends StatelessWidget {
       releaseId: json['releaseId'],
       storyPoints: json['storyPoints'],
       discussion: Base64Helper.decodeListOfStringFromJson(json['discussion']),
+      users: Base64Helper.decodeListOfStringFromJson(json['users']),
     );
   }
 

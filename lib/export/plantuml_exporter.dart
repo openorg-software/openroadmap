@@ -43,7 +43,7 @@ class PlantUMLExporter extends StatefulWidget implements Exporter {
       content += '\n';
 
       // Add information about all user stories
-      UserStory prev;
+      UserStory? prev;
       for (UserStory wp in r.userStories) {
         if (prev == null) {
           content +=
@@ -65,7 +65,7 @@ class PlantUMLExporter extends StatefulWidget implements Exporter {
     plantuml += content;
     plantuml += '@enduml';
     // Open File Save Dialog
-    String outputFilePath = await FilePicker.platform.saveFile(
+    String? outputFilePath = await FilePicker.platform.saveFile(
       dialogTitle: 'Save this roadmap as PlantUML Gantt Chart:',
       fileName: '${orProvider.rm.name.toLowerCase().replaceAll(' ', '')}.txt',
     );

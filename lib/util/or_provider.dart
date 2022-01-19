@@ -61,9 +61,12 @@ class ORProvider extends ChangeNotifier {
 
   void saveRoadmap() async {
     rm.releases = rm.releases;
-    String outputFilePath = await FilePicker.platform.saveFile(
+    String? outputFilePath = await FilePicker.platform.saveFile(
       dialogTitle: 'Save this roadmap:',
       fileName: 'roadmap.json',
+      allowedExtensions: ['json'],
+      type: FileType.custom,
+      lockParentWindow: true,
     );
     if (outputFilePath != null) {
       final file = File(outputFilePath);
@@ -72,10 +75,10 @@ class ORProvider extends ChangeNotifier {
   }
 
   void loadRoadmap() async {
-    FilePickerResult result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
-      File file = File(result.files.single.path);
+      File file = File(result.files.single.path!);
       rm = Roadmap.fromJson(jsonDecode(file.readAsStringSync()));
       rebuild();
     } else {

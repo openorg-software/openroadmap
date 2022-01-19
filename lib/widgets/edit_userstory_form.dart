@@ -6,15 +6,15 @@ import 'package:provider/provider.dart';
 class EditUserStoryForm extends StatefulWidget {
   final UserStory userStory;
 
-  EditUserStoryForm({this.userStory});
+  EditUserStoryForm({required this.userStory});
 
   _EditUserStoryForm createState() => _EditUserStoryForm();
 }
 
 class _EditUserStoryForm extends State<EditUserStoryForm> {
-  String name;
-  String description;
-  int storyPoints;
+  late String name;
+  late String description;
+  late int storyPoints;
 
   final _editKey = GlobalKey<FormState>();
 
@@ -48,7 +48,7 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
               return null;
             },
             onSaved: (text) {
-              this.name = text;
+              this.name = text!;
             },
           ),
           TextFormField(
@@ -67,7 +67,7 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
               return null;
             },
             onSaved: (text) {
-              this.description = text;
+              this.description = text!;
             },
           ),
           TextFormField(
@@ -86,7 +86,7 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
               return null;
             },
             onSaved: (text) {
-              this.storyPoints = int.parse(text);
+              this.storyPoints = int.parse(text!);
             },
           ),
           Container(
@@ -96,8 +96,8 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                 return ElevatedButton(
                   child: Text('Save'),
                   onPressed: () {
-                    if (_editKey.currentState.validate()) {
-                      _editKey.currentState.save();
+                    if (_editKey.currentState!.validate()) {
+                      _editKey.currentState!.save();
 
                       widget.userStory.name = name;
                       widget.userStory.description = description;

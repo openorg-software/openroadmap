@@ -6,15 +6,15 @@ import 'package:provider/provider.dart';
 class EditReleaseForm extends StatefulWidget {
   final Release release;
 
-  EditReleaseForm({this.release});
+  EditReleaseForm({required this.release});
 
   _EditReleaseForm createState() => _EditReleaseForm();
 }
 
 class _EditReleaseForm extends State<EditReleaseForm> {
-  String name;
-  DateTime startDate;
-  DateTime targetDate;
+  late String name;
+  late DateTime startDate;
+  late DateTime targetDate;
 
   final _editKey = GlobalKey<FormState>();
 
@@ -73,8 +73,8 @@ class _EditReleaseForm extends State<EditReleaseForm> {
                 return ElevatedButton(
                   child: Text('Save'),
                   onPressed: () {
-                    if (_editKey.currentState.validate()) {
-                      _editKey.currentState.save();
+                    if (_editKey.currentState!.validate()) {
+                      _editKey.currentState!.save();
                       print(startDate);
                       print(targetDate);
                       widget.release.startDate = startDate;

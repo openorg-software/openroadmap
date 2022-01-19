@@ -48,9 +48,9 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
     return Consumer<ORProvider>(builder: (context, orProvider, child) {
       return DragTarget<UserStory>(
         // Ensure user story is only dropped on other user story or empty list
-        onWillAccept: (UserStory data) {
+        onWillAccept: (data) {
           return orProvider.getReleaseById(releaseId).userStories.isEmpty ||
-              data.id !=
+              data!.id !=
                   orProvider
                       .getUserStoryInReleaseById(releaseId, targetUserStoryId)
                       .id;
@@ -77,7 +77,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
             orProvider.rebuild();
           });
         },
-        builder: (BuildContext context, List<UserStory> userStories,
+        builder: (BuildContext context, List<UserStory?> userStories,
             List<dynamic> rejectedData) {
           if (userStories.isEmpty) {
             // The area that accepts the draggable
@@ -91,7 +91,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                 Container(
                   height: height,
                 ),
-                ...userStories.map((UserStory item) {
+                ...userStories.map((item) {
                   return Opacity(
                     opacity: 0.5,
                     child: item,
@@ -130,8 +130,8 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
             buildItemDragTarget(release.id, 0, ThemeProvider.headerHeight),
             DragTarget<Release>(
               // Will accept others, but not himself
-              onWillAccept: (Release incomingRelease) {
-                return release.id != incomingRelease.id;
+              onWillAccept: (incomingRelease) {
+                return release.id != incomingRelease!.id;
               },
               // Moves the card into the position
               onAccept: (Release incomingRelease) {
@@ -157,7 +157,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                 });
               },
 
-              builder: (BuildContext context, List<Release> releases,
+              builder: (BuildContext context, List<Release?> releases,
                   List<dynamic> rejectedData) {
                 if (releases.isEmpty) {
                   // The area that accepts the draggable

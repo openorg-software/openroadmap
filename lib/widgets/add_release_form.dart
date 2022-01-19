@@ -11,9 +11,9 @@ class AddReleaseForm extends StatefulWidget {
 }
 
 class _AddReleaseForm extends State<AddReleaseForm> {
-  String name;
-  DateTime startDate;
-  DateTime targetDate;
+  late String name;
+  late DateTime startDate;
+  late DateTime targetDate;
 
   final _editKey = GlobalKey<FormState>();
 
@@ -46,7 +46,7 @@ class _AddReleaseForm extends State<AddReleaseForm> {
               return null;
             },
             onSaved: (text) {
-              this.name = text;
+              this.name = text!;
             },
           ),
           InputDatePickerFormField(
@@ -73,9 +73,10 @@ class _AddReleaseForm extends State<AddReleaseForm> {
                 return ElevatedButton(
                   child: Text('Save'),
                   onPressed: () {
-                    if (_editKey.currentState.validate()) {
-                      _editKey.currentState.save();
+                    if (_editKey.currentState!.validate()) {
+                      _editKey.currentState!.save();
                       Release r = Release(
+                        id: orProvider.rm.getNextReleaseId(),
                         name: name,
                         startDate: startDate,
                         targetDate: targetDate,
