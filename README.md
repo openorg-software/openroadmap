@@ -22,7 +22,7 @@
 | GitLab Export | Export roadmap to GitLab Issues | |
 | Gitea Export | Export roadmap to Gitea Issues | |
 | UI: Darkmode | Obligatory darkmode | Done |
-| UI: Colored users | Allow assigning colors to users | |
+| UI: Colored users | Allow assigning colors to users | Done |
 
 ## How to build
 
