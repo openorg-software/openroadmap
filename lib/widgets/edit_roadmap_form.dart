@@ -192,15 +192,31 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return SimpleDialog(
-                                        title: Text('Select Color'),
                                         children: [
-                                          ColorPicker(
-                                              pickerColor: pickerColor,
-                                              onColorChanged: (color) {
-                                                widget.roadmap.users[index]
-                                                    .color = color;
-                                                orProvider.rebuild();
-                                              }),
+                                          ListTile(
+                                            title: Text(
+                                              'Select Color',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            trailing: IconButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context),
+                                              icon: Icon(Icons.close),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                8, 0, 8, 0),
+                                            child: ColorPicker(
+                                                pickerColor: pickerColor,
+                                                onColorChanged: (color) {
+                                                  widget.roadmap.users[index]
+                                                      .color = color;
+                                                  orProvider.rebuild();
+                                                }),
+                                          ),
                                         ],
                                       );
                                     },
@@ -212,27 +228,24 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
                                 )),
                             IconButton(
                               onPressed: () {
-                                String user = widget.roadmap.users[index].name;
-                                widget.roadmap.users.remove(user);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Removed user: $user'),
-                                    action: SnackBarAction(
-                                      label: 'Revert',
-                                      onPressed: () {
-                                        widget.roadmap.users.add(
-                                          User(
-                                            name: user,
-                                            color: Color.fromARGB(
-                                                255, 100, 100, 100),
-                                          ),
-                                        );
-                                      },
+                                User user = widget.roadmap.users[index];
+                                if (widget.roadmap.removeUser(user, context)) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Removed user: $user'),
+                                      action: SnackBarAction(
+                                        label: 'Revert',
+                                        onPressed: () {
+                                          widget.roadmap.users.add(
+                                            user,
+                                          );
+                                          orProvider.rebuild();
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                );
-
-                                orProvider.rebuild();
+                                  );
+                                  orProvider.rebuild();
+                                }
                               },
                               icon: Icon(Icons.delete),
                             )

@@ -284,7 +284,8 @@ class Release extends StatelessWidget {
                                         child: ElevatedButton(
                                           child: Text('Confirm'),
                                           onPressed: () {
-                                            orProvider.rm.deleteRelease(this);
+                                            orProvider.rm
+                                                .deleteRelease(this, context);
                                             orProvider.rebuild();
                                             Navigator.pop(context);
                                           },

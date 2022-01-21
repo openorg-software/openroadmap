@@ -5,6 +5,7 @@ import 'package:openroadmap/model/user.dart';
 import 'package:openroadmap/util/base64_helper.dart';
 import 'package:openroadmap/util/or_provider.dart';
 import 'package:openroadmap/widgets/edit_userstory_form.dart';
+import 'package:openroadmap/widgets/priority_rating.dart';
 import 'package:provider/provider.dart';
 
 class UserStory extends StatelessWidget {
@@ -16,6 +17,7 @@ class UserStory extends StatelessWidget {
   int storyPoints;
   List<User> users;
   List<String> discussion = List<String>.empty(growable: true);
+  int priority;
 
   UserStory({
     required this.id,
@@ -25,6 +27,7 @@ class UserStory extends StatelessWidget {
     required this.description,
     required this.discussion,
     required this.users,
+    required this.priority,
   });
 
   factory UserStory.invalid() {
@@ -36,6 +39,7 @@ class UserStory extends StatelessWidget {
       discussion: [],
       releaseId: -1,
       users: [],
+      priority: 0,
     );
   }
 
@@ -66,6 +70,7 @@ class UserStory extends StatelessWidget {
                 Text('Story Points: $storyPoints'),
                 Text(
                     'Duration in Days: ~${orProvider.getDurationFromStoryPoints(storyPoints).inDays}'),
+                priority > 0 ? PriorityRating(userStory: this) : Container(),
                 users.length > 0 ? Divider() : Container(),
                 users.length > 0 ? Text('Users:') : Container(),
                 users.length > 0
@@ -201,6 +206,7 @@ class UserStory extends StatelessWidget {
       '"storyPoints"': storyPoints,
       '"discussion"': discussionList,
       '"users"': userList,
+      '"priority"': priority,
     };
   }
 
@@ -212,7 +218,10 @@ class UserStory extends StatelessWidget {
       releaseId: json['releaseId'],
       storyPoints: json['storyPoints'],
       discussion: Base64Helper.decodeListOfStringFromJson(json['discussion']),
-      users: User.fromJsonList(json['users']),
+      users: User.fromJsonList(json['users']) != null
+          ? User.fromJsonList(json['users'])
+          : [],
+      priority: json['priority'] != null ? json['priority'] : 0,
     );
   }
 

@@ -8,8 +8,9 @@ class User {
 
   factory User.fromJson(var json) {
     return User(
-      name: json['name'],
-      color: Color(json['color']),
+      name: json['name'] != null ? json['name'] : '',
+      color:
+          Color(json['color'] != null ? int.parse(json['color']) : 0xff000000),
     );
   }
 

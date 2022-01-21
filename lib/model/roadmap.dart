@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:openroadmap/model/release.dart';
 import 'package:openroadmap/model/user.dart';
+import 'package:openroadmap/model/user_story.dart';
 import 'package:openroadmap/util/base64_helper.dart';
 
 class Roadmap {
@@ -57,7 +59,33 @@ class Roadmap {
     this.releases.add(r);
   }
 
-  void deleteRelease(Release r) {
-    this.releases.remove(r);
+  void deleteRelease(Release r, context) {
+    if (r.userStories.length > 0) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:
+              (Text('Release contains User Stories, removal prevented.'))));
+    } else {
+      this.releases.remove(r);
+    }
+  }
+
+  bool removeUser(User u, context) {
+    bool userInUse = false;
+    for (Release r in releases) {
+      for (UserStory s in r.userStories) {
+        if (s.users.contains(u)) {
+          userInUse = true;
+        }
+      }
+    }
+    if (userInUse) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: (Text(
+              'User "${u.name}" assigned to user story, removal prevented.'))));
+      return false;
+    } else {
+      users.remove(u);
+      return true;
+    }
   }
 }

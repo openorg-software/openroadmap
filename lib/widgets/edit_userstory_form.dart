@@ -15,6 +15,7 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
   late String name;
   late String description;
   late int storyPoints;
+  late double priority;
 
   final _editKey = GlobalKey<FormState>();
 
@@ -23,6 +24,7 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
     name = widget.userStory.name;
     description = widget.userStory.description;
     storyPoints = widget.userStory.storyPoints;
+    priority = widget.userStory.priority.toDouble();
     super.initState();
   }
 
@@ -89,8 +91,23 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
               this.storyPoints = int.parse(text!);
             },
           ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+            child: Text('Priority:'),
+          ),
+          Slider(
+            value: priority,
+            max: 5,
+            divisions: 5,
+            label: priority.toInt().toString(),
+            onChanged: (double value) {
+              setState(() {
+                priority = value;
+              });
+            },
+          ),
           Container(
-            padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
+            padding: EdgeInsets.fromLTRB(0, 16, 0, 16),
             child: Consumer<ORProvider>(
               builder: (context, orProvider, child) {
                 return ElevatedButton(
@@ -102,6 +119,7 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                       widget.userStory.name = name;
                       widget.userStory.description = description;
                       widget.userStory.storyPoints = storyPoints;
+                      widget.userStory.priority = priority.toInt();
                       orProvider.rebuild();
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Saved user story.')));
@@ -121,12 +139,12 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                   fontSize: 18,
                 ),
               ),
-              Container(
-                height: 200,
-                width: 300,
-                child: Consumer<ORProvider>(
-                  builder: (context, orProvider, child) {
-                    return Padding(
+              Consumer<ORProvider>(
+                builder: (context, orProvider, child) {
+                  return Container(
+                    height: orProvider.rm.users.length > 0 ? 200 : 20,
+                    width: 300,
+                    child: Padding(
                       padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
                       child: GridView.builder(
                         shrinkWrap: true,
@@ -159,9 +177,9 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                           );
                         },
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
             ],
           ),

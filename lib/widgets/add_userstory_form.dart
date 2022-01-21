@@ -107,6 +107,7 @@ class _AddUserStoryForm extends State<AddUserStoryForm> {
                         description: description,
                         discussion: [],
                         users: [],
+                        priority: 0,
                       );
                       widget.release.addUserStory(wp);
                       orProvider.rebuild();

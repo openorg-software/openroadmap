@@ -44,6 +44,11 @@ class ThemeProvider extends ChangeNotifier {
         tertiary: Colors.grey,
         outline: Colors.grey,
       ),
+      sliderTheme: SliderThemeData(
+        activeTickMarkColor: Colors.black,
+        activeTrackColor: Colors.blueGrey,
+        thumbColor: Colors.black,
+      ),
       chipTheme: ChipThemeData(
         backgroundColor: Colors.white70,
         labelStyle: TextStyle(color: Colors.black),
