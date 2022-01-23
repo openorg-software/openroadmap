@@ -114,19 +114,24 @@ class UserStory extends StatelessWidget {
                               backgroundColor:
                                   Theme.of(context).dialogBackgroundColor,
                               children: [
-                                ListTile(
-                                  title: Text(
-                                    'Edit "$name"',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  trailing: IconButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    icon: Icon(Icons.close),
-                                  ),
-                                  subtitle: EditUserStoryForm(
-                                    userStory: this,
-                                  ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Edit "$name"',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    IconButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      icon: Icon(Icons.close),
+                                    ),
+                                  ],
+                                ),
+                                EditUserStoryForm(
+                                  userStory: this,
                                 ),
                               ],
                             );

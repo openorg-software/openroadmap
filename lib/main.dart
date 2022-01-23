@@ -251,7 +251,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
         return Scaffold(
           appBar: AppBar(
               title: Text(
-                "OpenRoadmap ${orProvider.rm != null ? '- ${orProvider.rm.name}' : ''}",
+                'OpenRoadmap - ${orProvider.rm.name}',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               actions: [
@@ -294,30 +294,8 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
-                              return SimpleDialog(
-                                contentPadding: EdgeInsets.all(10),
-                                backgroundColor:
-                                    Theme.of(context).dialogBackgroundColor,
-                                children: [
-                                  Container(
-                                    width: 500,
-                                    child: ListTile(
-                                      title: Text(
-                                        'Edit Roadmap',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      trailing: IconButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        icon: Icon(Icons.close),
-                                      ),
-                                      subtitle: EditRoadmapForm(
-                                        roadmap: orProvider.rm,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
+                              return buildEditRoadmapDialog(
+                                  context, orProvider);
                             },
                           );
                         },
@@ -398,4 +376,39 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
       },
     );
   }
+}
+
+SimpleDialog buildEditRoadmapDialog(
+    BuildContext context, ORProvider orProvider) {
+  return SimpleDialog(
+    contentPadding: EdgeInsets.all(10),
+    backgroundColor: Theme.of(context).dialogBackgroundColor,
+    children: [
+      Container(
+        width: 500,
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Edit Roadmap',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: Icon(Icons.close),
+                ),
+              ],
+            ),
+            EditRoadmapForm(
+              roadmap: orProvider.rm,
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
 }

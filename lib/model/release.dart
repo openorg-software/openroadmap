@@ -234,19 +234,24 @@ class Release extends StatelessWidget {
                                   backgroundColor:
                                       Theme.of(context).dialogBackgroundColor,
                                   children: [
-                                    ListTile(
-                                      title: Text(
-                                        'Edit "$name"',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      trailing: IconButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        icon: Icon(Icons.close),
-                                      ),
-                                      subtitle: EditReleaseForm(
-                                        release: this,
-                                      ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Edit "$name"',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context),
+                                          icon: Icon(Icons.close),
+                                        ),
+                                      ],
+                                    ),
+                                    EditReleaseForm(
+                                      release: this,
                                     ),
                                   ],
                                 );
@@ -268,28 +273,29 @@ class Release extends StatelessWidget {
                                   backgroundColor:
                                       Theme.of(context).dialogBackgroundColor,
                                   children: [
-                                    ListTile(
-                                      title: Text(
+                                    Row(children: [
+                                      Text(
                                         'Delete "$name"',
                                         style: TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                        ),
                                       ),
-                                      trailing: IconButton(
+                                      IconButton(
                                         onPressed: () => Navigator.pop(context),
                                         icon: Icon(Icons.close),
                                       ),
-                                      subtitle: Container(
-                                        padding:
-                                            EdgeInsets.fromLTRB(0, 16, 0, 0),
-                                        child: ElevatedButton(
-                                          child: Text('Confirm'),
-                                          onPressed: () {
-                                            orProvider.rm
-                                                .deleteRelease(this, context);
-                                            orProvider.rebuild();
-                                            Navigator.pop(context);
-                                          },
-                                        ),
+                                    ]),
+                                    Container(
+                                      padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
+                                      child: ElevatedButton(
+                                        child: Text('Confirm'),
+                                        onPressed: () {
+                                          orProvider.rm
+                                              .deleteRelease(this, context);
+                                          orProvider.rebuild();
+                                          Navigator.pop(context);
+                                        },
                                       ),
                                     ),
                                   ],
