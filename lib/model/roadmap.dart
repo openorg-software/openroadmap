@@ -52,6 +52,7 @@ class Roadmap {
       '"sprintLength"': sprintLength.inDays,
       '"users"': userList,
       '"style"': '"${Base64Helper.encodeString(userDefinedStyle)}"',
+      '"version"': roadmapSpecVersion,
     };
   }
 

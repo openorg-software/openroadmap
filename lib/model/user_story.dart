@@ -47,6 +47,63 @@ class UserStory extends StatelessWidget {
     return id != -1;
   }
 
+  Map<String, dynamic> toJson() {
+    List discussionList = List.empty(growable: true);
+    for (String s in this.discussion) {
+      var encodedDiscussion = base64Encode(utf8.encode(s));
+      discussionList.add('"$encodedDiscussion"');
+    }
+    List userList = List.empty(growable: true);
+    for (User s in this.users) {
+      userList.add(s.toJson());
+    }
+    return {
+      '"id"': id,
+      '"name"': '"$name"',
+      '"description"': '"${Base64Helper.encodeString(description)}"',
+      '"releaseId"': releaseId,
+      '"storyPoints"': storyPoints,
+      '"discussion"': discussionList,
+      '"users"': userList,
+      '"priority"': priority,
+    };
+  }
+
+  factory UserStory.fromJson(var json, int roadmapSpecVersion) {
+    String description = '';
+    if (roadmapSpecVersion > 0) {
+      description = Base64Helper.decodeString(json['description']);
+    } else {
+      description = json['description'];
+    }
+    return UserStory(
+      id: json['id'],
+      name: json['name'],
+      description: description,
+      releaseId: json['releaseId'],
+      storyPoints: json['storyPoints'],
+      discussion: Base64Helper.decodeListOfStringFromJson(json['discussion']),
+      users: User.fromJsonList(json['users']) != null
+          ? User.fromJsonList(json['users'])
+          : [],
+      priority: json['priority'] != null ? json['priority'] : 0,
+    );
+  }
+
+  static fromJsonList(var json, int roadmapSpecVersion) {
+    List<UserStory> userStories = List<UserStory>.empty(growable: true);
+    if (json == null) {
+      return List<UserStory>.empty(growable: true);
+    }
+    for (var j in json) {
+      if (j == null) {
+        continue;
+      }
+      userStories.add(UserStory.fromJson(j, roadmapSpecVersion));
+    }
+    return userStories;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -167,63 +224,6 @@ class UserStory extends StatelessWidget {
         }),
       ),
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    List discussionList = List.empty(growable: true);
-    for (String s in this.discussion) {
-      var encodedDiscussion = base64Encode(utf8.encode(s));
-      discussionList.add('"$encodedDiscussion"');
-    }
-    List userList = List.empty(growable: true);
-    for (User s in this.users) {
-      userList.add(s.toJson());
-    }
-    return {
-      '"id"': id,
-      '"name"': '"$name"',
-      '"description"': '"${Base64Helper.encodeString(description)}"',
-      '"releaseId"': releaseId,
-      '"storyPoints"': storyPoints,
-      '"discussion"': discussionList,
-      '"users"': userList,
-      '"priority"': priority,
-    };
-  }
-
-  factory UserStory.fromJson(var json, int roadmapSpecVersion) {
-    String description = '';
-    if (roadmapSpecVersion > 0) {
-      description = Base64Helper.decodeString(json['description']);
-    } else {
-      description = json['description'];
-    }
-    return UserStory(
-      id: json['id'],
-      name: json['name'],
-      description: description,
-      releaseId: json['releaseId'],
-      storyPoints: json['storyPoints'],
-      discussion: Base64Helper.decodeListOfStringFromJson(json['discussion']),
-      users: User.fromJsonList(json['users']) != null
-          ? User.fromJsonList(json['users'])
-          : [],
-      priority: json['priority'] != null ? json['priority'] : 0,
-    );
-  }
-
-  static fromJsonList(var json, int roadmapSpecVersion) {
-    List<UserStory> userStories = List<UserStory>.empty(growable: true);
-    if (json == null) {
-      return List<UserStory>.empty(growable: true);
-    }
-    for (var j in json) {
-      if (j == null) {
-        continue;
-      }
-      userStories.add(UserStory.fromJson(j, roadmapSpecVersion));
-    }
-    return userStories;
   }
 
   SimpleDialog getEditDialog(BuildContext context, ORProvider orProvider) {
