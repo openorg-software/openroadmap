@@ -147,10 +147,9 @@ class UserStory extends StatelessWidget {
                               child: Chip(
                                 label: Text(users[index].name),
                                 labelPadding: EdgeInsets.fromLTRB(4, 0, 4, 0),
-                                backgroundColor: orProvider
-                                    .rm
-                                    .users[orProvider.rm.users
-                                        .indexOf(users[index])]
+                                backgroundColor: orProvider.rm.users
+                                    .firstWhere(
+                                        (User u) => u.id == users[index].id)
                                     .color,
                               ),
                             );

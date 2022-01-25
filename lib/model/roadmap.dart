@@ -11,7 +11,7 @@ class Roadmap {
   Duration sprintLength;
   List<User> users;
   String userDefinedStyle;
-  int roadmapSpecVersion;
+  int roadmapSpecVersion = 1;
 
   Roadmap({
     required this.name,

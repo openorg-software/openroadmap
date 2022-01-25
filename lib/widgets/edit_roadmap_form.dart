@@ -152,6 +152,7 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
                     onPressed: () {
                       widget.roadmap.users.add(
                         User(
+                          id: User.determineHighestUserId(widget.roadmap.users),
                           name: 'New user',
                           color: Color.fromARGB(255, 100, 100, 100),
                         ),
