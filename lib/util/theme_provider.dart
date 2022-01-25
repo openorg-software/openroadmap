@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ThemeProvider extends ChangeNotifier {
   static double tileHeight = 150;
-  static double tileWidth = 300;
+  static double tileWidth = 310;
   static double headerHeight = 90;
 
   bool darkMode = false;

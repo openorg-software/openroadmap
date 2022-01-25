@@ -36,18 +36,19 @@ class Release extends StatelessWidget {
     };
   }
 
-  factory Release.fromJson(var json) {
+  factory Release.fromJson(var json, int roadmapSpecVersion) {
     return Release(
       id: json['id'],
       name: json['name'],
       startDate: DateTime.parse(json['startDate']),
       targetDate: DateTime.parse(json['targetDate']),
-      userStories: UserStory.fromJsonList(json['userStories']),
+      userStories:
+          UserStory.fromJsonList(json['userStories'], roadmapSpecVersion),
     );
   }
 
   // Build a list of releases from a JSON array
-  static fromJsonList(var json) {
+  static fromJsonList(var json, int roadmapSpecVersion) {
     List<Release> releases = List<Release>.empty(growable: true);
     if (json == null) {
       return List<Release>.empty(growable: true);
@@ -56,7 +57,7 @@ class Release extends StatelessWidget {
       if (j == null) {
         continue;
       }
-      Release r = Release.fromJson(j);
+      Release r = Release.fromJson(j, roadmapSpecVersion);
       r.determineHighestUSId();
       releases.add(r);
     }
@@ -197,20 +198,24 @@ class Release extends StatelessWidget {
                                   children: [
                                     Container(
                                       width: 500,
-                                      child: ListTile(
-                                        title: Text(
-                                          'Add User Story',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        trailing: IconButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
-                                          icon: Icon(Icons.close),
-                                        ),
-                                        subtitle: AddUserStoryForm(
-                                          release: this,
-                                        ),
+                                      child: Column(
+                                        children: [
+                                          Row(children: [
+                                            Text(
+                                              'Add User Story',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            IconButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context),
+                                              icon: Icon(Icons.close),
+                                            ),
+                                          ]),
+                                          AddUserStoryForm(
+                                            release: this,
+                                          )
+                                        ],
                                       ),
                                     ),
                                   ],

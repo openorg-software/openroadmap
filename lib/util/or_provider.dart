@@ -36,6 +36,7 @@ class ORProvider extends ChangeNotifier {
         '    }\n' +
         '  }\n' +
         '</style>\n',
+    roadmapSpecVersion: 1,
   );
 
   Release getReleaseById(int id) {

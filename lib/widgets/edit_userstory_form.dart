@@ -143,39 +143,41 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                 builder: (context, orProvider, child) {
                   return Container(
                     height: orProvider.rm.users.length > 0 ? 200 : 20,
-                    width: 300,
+                    width: 600,
                     child: Padding(
                       padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
-                      child: GridView.builder(
-                        shrinkWrap: true,
-                        gridDelegate:
-                            new SliverGridDelegateWithMaxCrossAxisExtent(
-                                //crossAxisCount: 4,
-                                maxCrossAxisExtent: 140,
-                                mainAxisSpacing: 0,
-                                childAspectRatio: 3),
-                        itemCount: orProvider.rm.users.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return ActionChip(
-                            avatar: widget.userStory.users
-                                    .contains(orProvider.rm.users[index])
-                                ? Icon(Icons.remove)
-                                : Icon(Icons.add),
-                            label: Text(orProvider.rm.users[index].name),
-                            backgroundColor: orProvider.rm.users[index].color,
-                            onPressed: () {
-                              if (widget.userStory.users
-                                  .contains(orProvider.rm.users[index])) {
-                                widget.userStory.users
-                                    .remove(orProvider.rm.users[index]);
-                              } else {
-                                widget.userStory.users
-                                    .add(orProvider.rm.users[index]);
-                              }
-                              orProvider.rebuild();
-                            },
-                          );
-                        },
+                      child: SingleChildScrollView(
+                        child: GridView.builder(
+                          shrinkWrap: true,
+                          gridDelegate:
+                              new SliverGridDelegateWithMaxCrossAxisExtent(
+                                  //crossAxisCount: 4,
+                                  maxCrossAxisExtent: 140,
+                                  mainAxisSpacing: 0,
+                                  childAspectRatio: 3),
+                          itemCount: orProvider.rm.users.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return ActionChip(
+                              avatar: widget.userStory.users
+                                      .contains(orProvider.rm.users[index])
+                                  ? Icon(Icons.remove)
+                                  : Icon(Icons.add),
+                              label: Text(orProvider.rm.users[index].name),
+                              backgroundColor: orProvider.rm.users[index].color,
+                              onPressed: () {
+                                if (widget.userStory.users
+                                    .contains(orProvider.rm.users[index])) {
+                                  widget.userStory.users
+                                      .remove(orProvider.rm.users[index]);
+                                } else {
+                                  widget.userStory.users
+                                      .add(orProvider.rm.users[index]);
+                                }
+                                orProvider.rebuild();
+                              },
+                            );
+                          },
+                        ),
                       ),
                     ),
                   );
@@ -198,7 +200,7 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                   child: ElevatedButton(
                     child: Text('Add discussion'),
                     onPressed: () {
-                      widget.userStory.discussion.add('New discussion');
+                      widget.userStory.discussion.add('');
                       orProvider.rebuild();
                     },
                   ),
@@ -206,7 +208,7 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
               }),
               Container(
                 height: 200,
-                width: 300,
+                width: 600,
                 child: Consumer<ORProvider>(
                   builder: (context, orProvider, child) {
                     return ListView.builder(
@@ -217,8 +219,12 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                         return Row(
                           children: [
                             Container(
-                              width: 250,
+                              width: 550,
                               child: TextFormField(
+                                decoration: InputDecoration(
+                                  border: UnderlineInputBorder(),
+                                  hintText: 'New discussion...',
+                                ),
                                 initialValue:
                                     widget.userStory.discussion[index],
                                 maxLines: null,

@@ -11,6 +11,7 @@ class Roadmap {
   Duration sprintLength;
   List<User> users;
   String userDefinedStyle;
+  int roadmapSpecVersion;
 
   Roadmap({
     required this.name,
@@ -19,16 +20,19 @@ class Roadmap {
     required this.sprintLength,
     required this.users,
     required this.userDefinedStyle,
+    required this.roadmapSpecVersion,
   });
 
   factory Roadmap.fromJson(var json) {
     return Roadmap(
       name: json['name'],
-      releases: Release.fromJsonList(json['releases']),
+      releases: Release.fromJsonList(
+          json['releases'], json['version'] != null ? json['version'] : -1),
       storyPointsPerSprint: json['storyPointsPerSprint'],
       sprintLength: Duration(days: json['sprintLength']),
       users: User.fromJsonList(json['users']),
       userDefinedStyle: Base64Helper.decodeString(json['style']),
+      roadmapSpecVersion: json['version'] != null ? json['version'] : -1,
     );
   }
 

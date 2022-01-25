@@ -90,7 +90,11 @@ class UserStory extends StatelessWidget {
                               child: Chip(
                                 label: Text(users[index].name),
                                 labelPadding: EdgeInsets.fromLTRB(4, 0, 4, 0),
-                                backgroundColor: users[index].color,
+                                backgroundColor: orProvider
+                                    .rm
+                                    .users[orProvider.rm.users
+                                        .indexOf(users[index])]
+                                    .color,
                               ),
                             );
                           },
@@ -109,74 +113,46 @@ class UserStory extends StatelessWidget {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            return SimpleDialog(
-                              contentPadding: EdgeInsets.all(8),
-                              backgroundColor:
-                                  Theme.of(context).dialogBackgroundColor,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Edit "$name"',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    IconButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      icon: Icon(Icons.close),
-                                    ),
-                                  ],
-                                ),
-                                EditUserStoryForm(
-                                  userStory: this,
-                                ),
-                              ],
-                            );
+                            return getEditDialog(context, orProvider);
                           },
                         );
                       },
                     ),
                     IconButton(
                       onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return SimpleDialog(
-                              contentPadding: EdgeInsets.all(8),
-                              backgroundColor:
-                                  Theme.of(context).dialogBackgroundColor,
-                              children: [
-                                ListTile(
-                                  title: Text(
-                                    'Delete "$name"',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  trailing: IconButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    icon: Icon(Icons.close),
-                                  ),
-                                  subtitle: Container(
-                                    padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
-                                    child: ElevatedButton(
-                                      child: Text('Confirm'),
-                                      onPressed: () {
-                                        orProvider
-                                            .getReleaseById(releaseId)
-                                            .removeUserStory(this);
-                                        orProvider.rebuild();
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ],
+                        orProvider.rm.releases
+                            .firstWhere((element) => element.id == releaseId)
+                            .addUserStory(
+                              UserStory(
+                                id: orProvider.rm.releases
+                                    .firstWhere(
+                                        (element) => element.id == releaseId)
+                                    .getNextUserStoryId(),
+                                releaseId: releaseId,
+                                name: name,
+                                storyPoints: storyPoints,
+                                description: description,
+                                discussion: discussion.toList(),
+                                users: users.toList(),
+                                priority: priority,
+                              ),
                             );
-                          },
-                        );
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text('Copied userstory "$name"')));
+                        orProvider.rebuild();
+                      },
+                      icon: Icon(
+                        Icons.copy,
+                        size: 25.0,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return getDeleteDialog(context, orProvider);
+                            });
                       },
                       icon: Icon(
                         Icons.delete,
@@ -206,7 +182,7 @@ class UserStory extends StatelessWidget {
     return {
       '"id"': id,
       '"name"': '"$name"',
-      '"description"': '"$description"',
+      '"description"': '"${Base64Helper.encodeString(description)}"',
       '"releaseId"': releaseId,
       '"storyPoints"': storyPoints,
       '"discussion"': discussionList,
@@ -215,11 +191,17 @@ class UserStory extends StatelessWidget {
     };
   }
 
-  factory UserStory.fromJson(var json) {
+  factory UserStory.fromJson(var json, int roadmapSpecVersion) {
+    String description = '';
+    if (roadmapSpecVersion > 0) {
+      description = Base64Helper.decodeString(json['description']);
+    } else {
+      description = json['description'];
+    }
     return UserStory(
       id: json['id'],
       name: json['name'],
-      description: json['description'],
+      description: description,
       releaseId: json['releaseId'],
       storyPoints: json['storyPoints'],
       discussion: Base64Helper.decodeListOfStringFromJson(json['discussion']),
@@ -230,7 +212,7 @@ class UserStory extends StatelessWidget {
     );
   }
 
-  static fromJsonList(var json) {
+  static fromJsonList(var json, int roadmapSpecVersion) {
     List<UserStory> userStories = List<UserStory>.empty(growable: true);
     if (json == null) {
       return List<UserStory>.empty(growable: true);
@@ -239,8 +221,70 @@ class UserStory extends StatelessWidget {
       if (j == null) {
         continue;
       }
-      userStories.add(UserStory.fromJson(j));
+      userStories.add(UserStory.fromJson(j, roadmapSpecVersion));
     }
     return userStories;
+  }
+
+  SimpleDialog getEditDialog(BuildContext context, ORProvider orProvider) {
+    return SimpleDialog(
+      contentPadding: EdgeInsets.all(16),
+      backgroundColor: Theme.of(context).dialogBackgroundColor,
+      children: [
+        Container(
+          width: 600,
+          height: 1,
+        ),
+        Row(
+          children: [
+            Text(
+              'Edit "$name"',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            Spacer(),
+            IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: Icon(Icons.close),
+            ),
+          ],
+        ),
+        EditUserStoryForm(
+          userStory: this,
+        ),
+      ],
+    );
+  }
+
+  SimpleDialog getDeleteDialog(BuildContext context, ORProvider orProvider) {
+    return SimpleDialog(
+      contentPadding: EdgeInsets.all(8),
+      backgroundColor: Theme.of(context).dialogBackgroundColor,
+      children: [
+        ListTile(
+          title: Text(
+            'Delete "$name"',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          trailing: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: Icon(Icons.close),
+          ),
+          subtitle: Container(
+            padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
+            child: ElevatedButton(
+              child: Text('Confirm'),
+              onPressed: () {
+                orProvider.getReleaseById(releaseId).removeUserStory(this);
+                orProvider.rebuild();
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

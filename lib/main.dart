@@ -141,8 +141,20 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                       .indexOf(orProvider.getReleaseById(incomingRelease.id)));
                   // Insert at new location
                   int oldId = incomingRelease.id;
+                  // Set release id for new release and all of its user stories
                   incomingRelease.id = release.id;
+                  incomingRelease.userStories.forEach((UserStory u) {
+                    u.releaseId = release.id;
+                  });
+                  // Set release id for old release and all of its user stories
                   orProvider.getReleaseById(release.id).id = oldId;
+                  orProvider
+                      .getReleaseById(release.id)
+                      .userStories
+                      .forEach((UserStory u) {
+                    u.releaseId = oldId;
+                  });
+                  // Insert release at correct location
                   if (release.id < incomingRelease.id) {
                     orProvider.rm.releases.insert(
                         orProvider.rm.releases.indexOf(release) + 1,
@@ -184,63 +196,69 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
     );
   }
 
-  buildKanbanList(Release release, List<UserStory> items) {
-    return Column(
-      children: [
-        buildHeader(release),
-        Expanded(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              children: [
-                release.userStories.length > 0
-                    ? ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        itemCount: items.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          // A stack that provides:
-                          // * A draggable object
-                          // * An area for incoming draggables
-                          return Stack(
-                            children: [
-                              Draggable<UserStory>(
-                                data: items[index],
-                                child: items[index],
-                                // A card waiting to be dragged
-                                childWhenDragging: Opacity(
-                                  // The card that's left behind
-                                  opacity: 0.2,
+  buildKanbanList(Release release, List<UserStory> items, bool darkBackground) {
+    return Container(
+      color: darkBackground
+          ? Color.fromARGB(10, 0, 0, 0)
+          : Color.fromARGB(10, 255, 255, 255),
+      child: Column(
+        children: [
+          buildHeader(release),
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  release.userStories.length > 0
+                      ? ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: items.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            // A stack that provides:
+                            // * A draggable object
+                            // * An area for incoming draggables
+                            return Stack(
+                              children: [
+                                Draggable<UserStory>(
+                                  data: items[index],
                                   child: items[index],
-                                ),
-                                feedback: Container(
-                                  // The dragged user story
-                                  height: 50,
-                                  width: ThemeProvider.tileWidth,
-                                  child: HoverWidget(
-                                    child: Card(
+                                  // A card waiting to be dragged
+                                  childWhenDragging: Opacity(
+                                    // The card that's left behind
+                                    opacity: 0.2,
+                                    child: items[index],
+                                  ),
+                                  feedback: Container(
+                                    // The dragged user story
+                                    height: 50,
+                                    width: ThemeProvider.tileWidth,
+                                    child: HoverWidget(
+                                      child: Card(
                                         child: ListTile(
-                                      title: Text(
-                                        items[index].name,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                          title: Text(
+                                            items[index].name,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
                                       ),
-                                    )),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              buildItemDragTarget(release.id, items[index].id,
-                                  ThemeProvider.tileHeight),
-                            ],
-                          );
-                        },
-                      )
-                    : Container(),
-              ],
+                                buildItemDragTarget(release.id, items[index].id,
+                                    ThemeProvider.tileHeight),
+                              ],
+                            );
+                          },
+                        )
+                      : Container(),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -267,17 +285,20 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                           children: [
                             Container(
                               width: 500,
-                              child: ListTile(
-                                title: Text(
-                                  'Add Release',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                trailing: IconButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  icon: Icon(Icons.close),
-                                ),
-                                subtitle: AddReleaseForm(),
-                              ),
+                              child: Column(children: [
+                                Row(children: [
+                                  Text(
+                                    'Add Release',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  IconButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    icon: Icon(Icons.close),
+                                  ),
+                                ]),
+                                AddReleaseForm(),
+                              ]),
                             ),
                           ],
                         );
@@ -366,7 +387,8 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                     children: orProvider.rm.releases.map((Release r) {
                       return Container(
                         width: ThemeProvider.tileWidth,
-                        child: buildKanbanList(r, r.userStories),
+                        child: buildKanbanList(r, r.userStories,
+                            orProvider.rm.releases.indexOf(r) % 2 == 0),
                       );
                     }).toList(),
                   ),
