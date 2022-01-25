@@ -46,8 +46,9 @@ class UserStory extends StatelessWidget {
   bool isValid() {
     return id != -1;
   }
-  bool containsUserWithId(int id){
-    for(User u in users) {
+
+  bool containsUserWithId(int id) {
+    for (User u in users) {
       if (u.id == id) {
         return true;
       }
@@ -134,7 +135,7 @@ class UserStory extends StatelessWidget {
               children: [
                 Text('Story Points: $storyPoints'),
                 Text(
-                    'Duration in Days: ~${orProvider.getDurationFromStoryPoints(storyPoints).inDays}'),
+                    'Duration in Days: ~${orProvider.getReleaseById(releaseId).getDurationFromStoryPoints(storyPoints).inDays}'),
                 priority > 0 ? PriorityRating(userStory: this) : Container(),
                 users.length > 0 ? Divider() : Container(),
                 users.length > 0 ? Text('Users:') : Container(),

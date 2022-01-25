@@ -11,7 +11,7 @@ class Roadmap {
   Duration sprintLength;
   List<User> users;
   String userDefinedStyle;
-  int roadmapSpecVersion = 1;
+  int roadmapSpecVersion = 2;
 
   Roadmap({
     required this.name,
@@ -24,10 +24,20 @@ class Roadmap {
   });
 
   factory Roadmap.fromJson(var json) {
+    List<Release> releases;
+    if (json['version'] != null && json['version'] < 2) {
+      releases = Release.fromJsonList(
+          json['releases'],
+          json['version'] != null ? json['version'] : -1,
+          json['storyPointsPerSprint'],
+          json['sprintLength']);
+    } else {
+      releases = Release.fromJsonList(json['releases'], json['version'], 0, 0);
+    }
+
     return Roadmap(
       name: json['name'],
-      releases: Release.fromJsonList(
-          json['releases'], json['version'] != null ? json['version'] : -1),
+      releases: releases,
       storyPointsPerSprint: json['storyPointsPerSprint'],
       sprintLength: Duration(days: json['sprintLength']),
       users: User.fromJsonList(json['users']),
@@ -82,7 +92,6 @@ class Roadmap {
         color: Color.fromARGB(255, 100, 100, 100),
       ),
     );
-    print(users.last.toJson());
   }
 
   bool removeUser(User u, context) {

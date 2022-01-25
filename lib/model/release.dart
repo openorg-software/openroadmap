@@ -12,15 +12,20 @@ class Release extends StatelessWidget {
   late DateTime endDate;
   DateTime targetDate;
   int highestUsId = 0;
+  int storyPointsPerSprint;
+  Duration sprintLength;
 
   List<UserStory> userStories = List<UserStory>.empty(growable: true);
 
-  Release(
-      {required this.id,
-      required this.name,
-      required this.startDate,
-      required this.targetDate,
-      required this.userStories});
+  Release({
+    required this.id,
+    required this.name,
+    required this.startDate,
+    required this.targetDate,
+    required this.userStories,
+    required this.storyPointsPerSprint,
+    required this.sprintLength,
+  });
 
   Map<String, dynamic> toJson() {
     List userStories = List.empty(growable: true);
@@ -32,11 +37,23 @@ class Release extends StatelessWidget {
       '"name"': '"$name"',
       '"startDate"': '"$startDate"',
       '"targetDate"': '"$targetDate"',
-      '"userStories"': userStories
+      '"userStories"': userStories,
+      '"storyPointsPerSprint"': storyPointsPerSprint,
+      '"sprintLength"': sprintLength.inDays,
     };
   }
 
-  factory Release.fromJson(var json, int roadmapSpecVersion) {
+  factory Release.fromJson(var json, int roadmapSpecVersion,
+      int storyPointsPerSprint, int sprintLength) {
+    int newStoryPointsPerSprint = 10;
+    int newSprintLength = 14;
+    if (roadmapSpecVersion < 2) {
+      newStoryPointsPerSprint = storyPointsPerSprint;
+      newSprintLength = sprintLength;
+    } else {
+      newStoryPointsPerSprint = json['storyPointsPerSprint'];
+      newSprintLength = json['sprintLength'];
+    }
     return Release(
       id: json['id'],
       name: json['name'],
@@ -44,11 +61,14 @@ class Release extends StatelessWidget {
       targetDate: DateTime.parse(json['targetDate']),
       userStories:
           UserStory.fromJsonList(json['userStories'], roadmapSpecVersion),
+      storyPointsPerSprint: newStoryPointsPerSprint,
+      sprintLength: Duration(days: newSprintLength),
     );
   }
 
   // Build a list of releases from a JSON array
-  static fromJsonList(var json, int roadmapSpecVersion) {
+  static fromJsonList(var json, int roadmapSpecVersion,
+      int storyPointsPerSprint, int sprintLength) {
     List<Release> releases = List<Release>.empty(growable: true);
     if (json == null) {
       return List<Release>.empty(growable: true);
@@ -57,7 +77,8 @@ class Release extends StatelessWidget {
       if (j == null) {
         continue;
       }
-      Release r = Release.fromJson(j, roadmapSpecVersion);
+      Release r = Release.fromJson(
+          j, roadmapSpecVersion, storyPointsPerSprint, sprintLength);
       r.determineHighestUSId();
       releases.add(r);
     }
@@ -71,6 +92,8 @@ class Release extends StatelessWidget {
       targetDate: DateTime(2022),
       startDate: DateTime(2022),
       userStories: [],
+      sprintLength: Duration(days: 0),
+      storyPointsPerSprint: 0,
     );
   }
 
@@ -102,8 +125,25 @@ class Release extends StatelessWidget {
   }
 
   DateTime getEndDate(ORProvider orProvider) {
-    return startDate
-        .add(orProvider.getDurationFromStoryPoints(getStoryPoints()));
+    return startDate.add(getDurationFromStoryPoints(getStoryPoints()));
+  }
+
+  Duration getDurationFromStoryPoints(num storyPoints) {
+    // Get duration per storypoint
+    return Duration(
+        days: (storyPoints * (sprintLength.inDays / storyPointsPerSprint))
+            .toInt());
+  }
+
+  int getStoryPointDifference(DateTime startDate, DateTime endDate) {
+    Duration difference;
+    if (startDate.isAfter(endDate)) {
+      difference = startDate.difference(endDate);
+    } else {
+      difference = endDate.difference(startDate);
+    }
+    return (difference.inDays * (storyPointsPerSprint / sprintLength.inDays))
+        .toInt();
   }
 
   // Get the end date as string
@@ -164,21 +204,21 @@ class Release extends StatelessWidget {
                         'Start: ${getStartDate()} - End: ${getEndDateString(orProvider)}'),
                     Text('Story Points: ${getStoryPoints()}'),
                     Text(
-                        'Duration in Days: ~${orProvider.getDurationFromStoryPoints(getStoryPoints()).inDays}'),
+                        'Duration in Days: ~${getDurationFromStoryPoints(getStoryPoints()).inDays}'),
                     Text(
                       'Target Date: ${getTargetDate()}',
                       style: TextStyle(
-                        color: targetDate.isAfter(startDate.add(orProvider
-                                .getDurationFromStoryPoints(getStoryPoints())))
+                        color: targetDate.isAfter(startDate.add(
+                                getDurationFromStoryPoints(getStoryPoints())))
                             ? Colors.green
                             : Colors.red,
                       ),
                     ),
                     Text(
-                      'Story Point Difference: ~${orProvider.getStoryPointDifference(targetDate, getEndDate(orProvider))}',
+                      'Story Point Difference: ~${getStoryPointDifference(targetDate, getEndDate(orProvider))}',
                       style: TextStyle(
-                        color: targetDate.isAfter(startDate.add(orProvider
-                                .getDurationFromStoryPoints(getStoryPoints())))
+                        color: targetDate.isAfter(startDate.add(
+                                getDurationFromStoryPoints(getStoryPoints())))
                             ? Colors.green
                             : Colors.red,
                       ),

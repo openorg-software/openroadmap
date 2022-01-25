@@ -81,6 +81,9 @@ class _AddReleaseForm extends State<AddReleaseForm> {
                         startDate: startDate,
                         targetDate: targetDate,
                         userStories: List<UserStory>.empty(growable: true),
+                        storyPointsPerSprint:
+                            orProvider.rm.storyPointsPerSprint,
+                        sprintLength: orProvider.rm.sprintLength,
                       );
                       orProvider.rm.addRelease(r);
                       orProvider.rebuild();

@@ -8,7 +8,6 @@ class ThemeProvider extends ChangeNotifier {
   bool darkMode = false;
 
   void toggleDarkMode() {
-    print('toggle');
     darkMode = !darkMode;
     notifyListeners();
   }

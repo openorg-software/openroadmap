@@ -66,6 +66,45 @@ class _EditReleaseForm extends State<EditReleaseForm> {
               targetDate = date;
             },
           ),
+          TextFormField(
+            initialValue: '${this.widget.release.storyPointsPerSprint}',
+            decoration: InputDecoration(
+              border: UnderlineInputBorder(),
+              hintText: 'Story Points per sprint',
+              labelText: 'Story Points per sprint:',
+            ),
+            validator: (value) {
+              if (value == null ||
+                  value.isEmpty ||
+                  int.tryParse(value) == null) {
+                return 'Please insert story point per sprint value';
+              }
+              return null;
+            },
+            onSaved: (text) {
+              this.widget.release.storyPointsPerSprint = int.parse(text!);
+            },
+          ),
+          TextFormField(
+            initialValue: '${this.widget.release.sprintLength.inDays}',
+            decoration: InputDecoration(
+              border: UnderlineInputBorder(),
+              hintText: 'Sprint length in days',
+              labelText: 'Sprint length in days:',
+            ),
+            validator: (value) {
+              if (value == null ||
+                  value.isEmpty ||
+                  int.tryParse(value) == null) {
+                return 'Please insert sprint length in days';
+              }
+              return null;
+            },
+            onSaved: (text) {
+              this.widget.release.sprintLength =
+                  Duration(days: int.parse(text!));
+            },
+          ),
           Container(
             padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
             child: Consumer<ORProvider>(
@@ -75,8 +114,6 @@ class _EditReleaseForm extends State<EditReleaseForm> {
                   onPressed: () {
                     if (_editKey.currentState!.validate()) {
                       _editKey.currentState!.save();
-                      print(startDate);
-                      print(targetDate);
                       widget.release.startDate = startDate;
                       widget.release.targetDate = targetDate;
                       widget.release.name = name;

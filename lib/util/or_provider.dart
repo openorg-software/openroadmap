@@ -97,25 +97,6 @@ class ORProvider extends ChangeNotifier {
     }
   }
 
-  Duration getDurationFromStoryPoints(num storyPoints) {
-    // Get duration per storypoint
-    return Duration(
-        days: (storyPoints * (rm.sprintLength.inDays / rm.storyPointsPerSprint))
-            .toInt());
-  }
-
-  int getStoryPointDifference(DateTime startDate, DateTime endDate) {
-    Duration difference;
-    if (startDate.isAfter(endDate)) {
-      difference = startDate.difference(endDate);
-    } else {
-      difference = endDate.difference(startDate);
-    }
-    return (difference.inDays *
-            (rm.storyPointsPerSprint / rm.sprintLength.inDays))
-        .toInt();
-  }
-
   rebuild() {
     notifyListeners();
   }

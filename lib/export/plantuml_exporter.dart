@@ -48,12 +48,12 @@ class PlantUMLExporter extends StatefulWidget implements Exporter {
         if (prev == null) {
           content +=
               '[{${r.id}} ${wp.name}] as [{${r.id}} ${wp.name}] starts at [{${r.id}} ${r.name}]\'s start '
-              'and lasts ${orProvider.getDurationFromStoryPoints(wp.storyPoints).inDays} days';
+              'and lasts ${r.getDurationFromStoryPoints(wp.storyPoints).inDays} days';
           prev = wp;
         } else {
           content +=
               '[{${r.id}} ${wp.name}] as [{${r.id}} ${wp.name}] starts at [{${r.id}} ${prev.name}]\'s end '
-              'and lasts ${orProvider.getDurationFromStoryPoints(wp.storyPoints).inDays} days';
+              'and lasts ${r.getDurationFromStoryPoints(wp.storyPoints).inDays} days';
           prev = wp;
         }
 
