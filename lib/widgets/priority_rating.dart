@@ -30,15 +30,17 @@ class _PriorityRating extends State<PriorityRating> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ListView.builder(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemCount: 5,
-              itemBuilder: (builder, index) {
-                if (index < widget.userStory.priority) {
-                  return Icon(Icons.star);
-                }
-                return Icon(Icons.star_border);
-              })
+            scrollDirection: Axis.horizontal,
+            controller: ScrollController(),
+            shrinkWrap: true,
+            itemCount: 5,
+            itemBuilder: (builder, index) {
+              if (index < widget.userStory.priority) {
+                return Icon(Icons.star);
+              }
+              return Icon(Icons.star_border);
+            },
+          )
         ],
       ),
     );

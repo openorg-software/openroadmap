@@ -49,6 +49,7 @@ class User {
         highestUserId = u.id;
       }
     }
+    highestUserId++;
     return highestUserId;
   }
 }

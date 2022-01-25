@@ -74,6 +74,17 @@ class Roadmap {
     }
   }
 
+  addUser() {
+    users.add(
+      User(
+        id: User.determineHighestUserId(users),
+        name: 'New user',
+        color: Color.fromARGB(255, 100, 100, 100),
+      ),
+    );
+    print(users.last.toJson());
+  }
+
   bool removeUser(User u, context) {
     bool userInUse = false;
     for (Release r in releases) {

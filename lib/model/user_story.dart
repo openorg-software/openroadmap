@@ -46,6 +46,14 @@ class UserStory extends StatelessWidget {
   bool isValid() {
     return id != -1;
   }
+  bool containsUserWithId(int id){
+    for(User u in users) {
+      if (u.id == id) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   Map<String, dynamic> toJson() {
     List discussionList = List.empty(growable: true);

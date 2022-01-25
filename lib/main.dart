@@ -207,6 +207,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
+              controller: ScrollController(),
               child: Column(
                 children: [
                   release.userStories.length > 0
@@ -214,6 +215,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
                           itemCount: items.length,
+                          controller: ScrollController(),
                           itemBuilder: (BuildContext context, int index) {
                             // A stack that provides:
                             // * A draggable object
@@ -382,6 +384,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
           body: orProvider.rm != null
               ? SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
+                  controller: ScrollController(),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: orProvider.rm.releases.map((Release r) {

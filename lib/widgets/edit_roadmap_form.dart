@@ -150,13 +150,7 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
                   child: ElevatedButton(
                     child: Text('Add user'),
                     onPressed: () {
-                      widget.roadmap.users.add(
-                        User(
-                          id: User.determineHighestUserId(widget.roadmap.users),
-                          name: 'New user',
-                          color: Color.fromARGB(255, 100, 100, 100),
-                        ),
-                      );
+                      orProvider.rm.addUser();
                       orProvider.rebuild();
                     },
                   ),

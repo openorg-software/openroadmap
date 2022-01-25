@@ -16,14 +16,14 @@ class Base64Helper {
   }
 
   static String encodeString(String s) {
-    if (s == '' || s == null) {
+    if (s == '') {
       return '';
     }
     return base64Encode(utf8.encode(s));
   }
 
   static String decodeString(String s) {
-    if (s == '' || s == null) {
+    if (s == '') {
       return '';
     }
     return utf8.decode(base64Decode(s));

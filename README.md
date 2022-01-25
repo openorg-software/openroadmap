@@ -1,7 +1,5 @@
 # OpenRoadmap - Open Source Product Roadmap Planning
 
-
-
 ## About
 
 ## Features
@@ -35,7 +33,6 @@
 flutter pub get
 flutter build <desktop platform>
 ```
-
 
 ## License
 

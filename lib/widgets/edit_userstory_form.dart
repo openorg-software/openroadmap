@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:openroadmap/model/user.dart';
 import 'package:openroadmap/model/user_story.dart';
 import 'package:openroadmap/util/or_provider.dart';
 import 'package:provider/provider.dart';
@@ -147,6 +148,7 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                     child: Padding(
                       padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
                       child: SingleChildScrollView(
+                        controller: ScrollController(),
                         child: GridView.builder(
                           shrinkWrap: true,
                           gridDelegate:
@@ -158,17 +160,16 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                           itemCount: orProvider.rm.users.length,
                           itemBuilder: (BuildContext context, int index) {
                             return ActionChip(
-                              avatar: widget.userStory.users
-                                      .contains(orProvider.rm.users[index])
+                              avatar: widget.userStory.containsUserWithId(orProvider.rm.users[index].id)
                                   ? Icon(Icons.remove)
                                   : Icon(Icons.add),
                               label: Text(orProvider.rm.users[index].name),
                               backgroundColor: orProvider.rm.users[index].color,
                               onPressed: () {
-                                if (widget.userStory.users
-                                    .contains(orProvider.rm.users[index])) {
+                                if (widget.userStory.containsUserWithId(orProvider.rm.users[index].id)) {
                                   widget.userStory.users
-                                      .remove(orProvider.rm.users[index]);
+                                      .remove(widget.userStory.users.firstWhere((User u) => u.id ==orProvider.rm.users[index].id
+                                  ));
                                 } else {
                                   widget.userStory.users
                                       .add(orProvider.rm.users[index]);
@@ -213,6 +214,7 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                   builder: (context, orProvider, child) {
                     return ListView.builder(
                       scrollDirection: Axis.vertical,
+                      controller: ScrollController(),
                       shrinkWrap: true,
                       itemCount: widget.userStory.discussion.length,
                       itemBuilder: (BuildContext context, int index) {
