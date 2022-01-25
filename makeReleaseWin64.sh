@@ -1,5 +1,5 @@
 #!/bin/sh
-#flutter build windows
+flutter build windows
 
 VERSION=$(cat ./pubspec.yaml | grep version)
 IFS=' '
