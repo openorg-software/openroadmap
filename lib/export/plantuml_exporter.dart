@@ -23,7 +23,7 @@ class PlantUMLExporter extends StatefulWidget implements Exporter {
         '\n</style>\n';
     String userDefinedStyle = orProvider.rm.userDefinedStyle;
     // Set user defined style instead of default
-    if (userDefinedStyle != null && userDefinedStyle != '') {
+    if (userDefinedStyle != '') {
       plantuml += userDefinedStyle;
     } else {
       plantuml += defaultStyle;

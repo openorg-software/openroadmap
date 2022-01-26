@@ -12,8 +12,6 @@ class PriorityRating extends StatefulWidget {
 class _PriorityRating extends State<PriorityRating> {
   late int priority;
 
-  final _editKey = GlobalKey<FormState>();
-
   @override
   void initState() {
     priority = widget.userStory.priority;

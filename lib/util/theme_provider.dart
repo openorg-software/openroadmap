@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ThemeProvider extends ChangeNotifier {
-  static double tileHeight = 150;
-  static double tileWidth = 310;
+  static double tileHeight = 120;
+  static double tileWidth = 350;
   static double headerHeight = 90;
 
   bool darkMode = false;
@@ -22,12 +22,21 @@ class ThemeProvider extends ChangeNotifier {
 
   ThemeData getLightModeTheme() {
     return ThemeData(
+      cardTheme: CardTheme(
+        color: Color(0xFFDEDEDE),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+        ),
+      ),
       backgroundColor: Colors.white,
     );
   }
 
   ThemeData getDarkModeTheme() {
     return ThemeData(
+      cardTheme: CardTheme(
+        color: Color(0xFF535353),
+      ),
       colorScheme: ColorScheme(
         brightness: Brightness.dark,
         primary: Colors.black26,

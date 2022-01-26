@@ -176,6 +176,7 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
                                 keyboardType: TextInputType.multiline,
                                 onChanged: (value) {
                                   widget.roadmap.users[index].name = value;
+                                  orProvider.rebuild();
                                 },
                               ),
                             ),

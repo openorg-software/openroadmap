@@ -196,7 +196,7 @@ class Release extends StatelessWidget {
                 ),
                 title: Text(
                   '$name',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
                 ),
                 subtitle: Column(
                   children: [
@@ -226,8 +226,14 @@ class Release extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        IconButton(
-                          onPressed: () {
+                        InkWell(
+                          child: Icon(
+                            Icons.add,
+                            size: 30.0,
+                          ),
+                          radius: 64,
+                          borderRadius: BorderRadius.all(Radius.circular(16)),
+                          onTap: () {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -263,14 +269,19 @@ class Release extends StatelessWidget {
                               },
                             );
                           },
-                          icon: Icon(
-                            Icons.add,
-                            size: 30.0,
-                          ),
                         ),
                         Spacer(),
-                        IconButton(
-                          onPressed: () {
+                        InkWell(
+                          child: Container(
+                            margin: EdgeInsets.all(4),
+                            child: Icon(
+                              Icons.edit,
+                              size: 30.0,
+                            ),
+                          ),
+                          radius: 64,
+                          borderRadius: BorderRadius.all(Radius.circular(32)),
+                          onTap: () {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -303,13 +314,18 @@ class Release extends StatelessWidget {
                               },
                             );
                           },
-                          icon: Icon(
-                            Icons.edit,
-                            size: 30.0,
-                          ),
                         ),
-                        IconButton(
-                          onPressed: () {
+                        InkWell(
+                          child: Container(
+                            margin: EdgeInsets.all(4),
+                            child: Icon(
+                              Icons.delete,
+                              size: 30.0,
+                            ),
+                          ),
+                          radius: 64,
+                          borderRadius: BorderRadius.all(Radius.circular(32)),
+                          onTap: () {
                             showDialog(
                               context: context,
                               builder: (BuildContext context) {
@@ -348,10 +364,6 @@ class Release extends StatelessWidget {
                               },
                             );
                           },
-                          icon: Icon(
-                            Icons.delete,
-                            size: 30.0,
-                          ),
                         ),
                       ],
                     ),
