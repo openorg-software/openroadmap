@@ -311,8 +311,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                     Icons.add,
                   ),
                 ),
-                orProvider.rm != null
-                    ? IconButton(
+                IconButton(
                         onPressed: () {
                           showDialog(
                             context: context,
@@ -325,52 +324,46 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                         icon: Icon(
                           Icons.edit,
                         ),
-                      )
-                    : Container(),
-                orProvider.rm != null
-                    ? IconButton(
+                      ),
+                    IconButton(
                         onPressed: () => orProvider.saveRoadmap(context),
                         icon: Icon(Icons.save),
-                      )
-                    : Container(),
+                      ),
                 IconButton(
                   onPressed: () => orProvider.loadRoadmap(context),
                   icon: Icon(Icons.upload_file),
                 ),
-                orProvider.rm != null
-                    ? IconButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return SimpleDialog(
-                                contentPadding: EdgeInsets.all(10),
-                                backgroundColor:
-                                    Theme.of(context).dialogBackgroundColor,
-                                children: [
-                                  Container(
-                                    width: 500,
-                                    child: ListTile(
-                                      title: Text(
-                                        'Export Roadmap',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      trailing: IconButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        icon: Icon(Icons.close),
-                                      ),
-                                      subtitle: ExportForm(),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                        icon: Icon(Icons.share),
-                      )
-                    : Container(),
+                IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SimpleDialog(
+                          contentPadding: EdgeInsets.all(10),
+                          backgroundColor:
+                              Theme.of(context).dialogBackgroundColor,
+                          children: [
+                            Container(
+                              width: 500,
+                              child: ListTile(
+                                title: Text(
+                                  'Export Roadmap',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                trailing: IconButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  icon: Icon(Icons.close),
+                                ),
+                                subtitle: ExportForm(),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  icon: Icon(Icons.share),
+                ),
                 Consumer<ThemeProvider>(
                     builder: (context, themeProvider, child) {
                   return IconButton(
@@ -381,22 +374,20 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                   );
                 }),
               ]),
-          body: orProvider.rm != null
-              ? SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  controller: ScrollController(),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: orProvider.rm.releases.map((Release r) {
-                      return Container(
-                        width: ThemeProvider.tileWidth,
-                        child: buildKanbanList(r, r.userStories,
-                            orProvider.rm.releases.indexOf(r) % 2 == 0),
-                      );
-                    }).toList(),
-                  ),
-                )
-              : Container(),
+          body: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            controller: ScrollController(),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: orProvider.rm.releases.map((Release r) {
+                return Container(
+                  width: ThemeProvider.tileWidth,
+                  child: buildKanbanList(r, r.userStories,
+                      orProvider.rm.releases.indexOf(r) % 2 == 0),
+                );
+              }).toList(),
+            ),
+          ),
         );
       },
     );

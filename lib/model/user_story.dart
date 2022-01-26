@@ -126,9 +126,69 @@ class UserStory extends StatelessWidget {
               horizontal: 20.0,
               vertical: 10.0,
             ),
-            title: Text(
-              name,
-              style: TextStyle(fontWeight: FontWeight.bold),
+            title: Row(
+              children: [
+                Text(
+                  name,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+                Spacer(),
+                IconButton(
+                  icon: Icon(
+                    Icons.edit,
+                    size: 25.0,
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return getEditDialog(context, orProvider);
+                      },
+                    );
+                  },
+                ),
+                IconButton(
+                  onPressed: () {
+                    orProvider.rm.releases
+                        .firstWhere((element) => element.id == releaseId)
+                        .addUserStory(
+                          UserStory(
+                            id: orProvider.rm.releases
+                                .firstWhere(
+                                    (element) => element.id == releaseId)
+                                .getNextUserStoryId(),
+                            releaseId: releaseId,
+                            name: name,
+                            storyPoints: storyPoints,
+                            description: description,
+                            discussion: discussion.toList(),
+                            users: users.toList(),
+                            priority: priority,
+                          ),
+                        );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Copied userstory "$name"')));
+                    orProvider.rebuild();
+                  },
+                  icon: Icon(
+                    Icons.copy,
+                    size: 25.0,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return getDeleteDialog(context, orProvider);
+                        });
+                  },
+                  icon: Icon(
+                    Icons.delete,
+                    size: 25.0,
+                  ),
+                ),
+              ],
             ),
             subtitle: Column(
               mainAxisSize: MainAxisSize.min,
@@ -142,20 +202,43 @@ class UserStory extends StatelessWidget {
                 users.length > 0
                     ? Padding(
                         padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
-                        child: GridView.builder(
+                        child: Wrap(
+                          children: users.map((User um) {
+                            return Container(
+                              padding: EdgeInsets.fromLTRB(4, 2, 4, 2),
+                              child: Chip(
+                                label: Text(orProvider.rm.users
+                                    .firstWhere((User u) => u.id == um.id)
+                                    .name),
+                                labelPadding: EdgeInsets.fromLTRB(4, 0, 4, 0),
+                                shadowColor: Colors.black87,
+                                elevation: 2,
+                                backgroundColor: orProvider.rm.users
+                                    .firstWhere((User u) => u.id == um.id)
+                                    .color,
+                              ),
+                            );
+                          }).toList(),
+                        )
+
+                        /*GridView.builder(
                           itemCount: users.length,
                           shrinkWrap: true,
                           gridDelegate:
                               new SliverGridDelegateWithMaxCrossAxisExtent(
-                                  //crossAxisCount: 4,
-                                  maxCrossAxisExtent: 80,
-                                  mainAxisSpacing: 0,
+                                  maxCrossAxisExtent: 100,
+                                  mainAxisSpacing: 4,
                                   childAspectRatio: 2.5),
                           itemBuilder: (BuildContext context, int index) {
                             return Center(
                               child: Chip(
-                                label: Text(users[index].name),
+                                label: Text(orProvider.rm.users
+                                    .firstWhere(
+                                        (User u) => u.id == users[index].id)
+                                    .name),
                                 labelPadding: EdgeInsets.fromLTRB(4, 0, 4, 0),
+                                shadowColor: Colors.black87,
+                                elevation: 2,
                                 backgroundColor: orProvider.rm.users
                                     .firstWhere(
                                         (User u) => u.id == users[index].id)
@@ -163,69 +246,9 @@ class UserStory extends StatelessWidget {
                               ),
                             );
                           },
-                        ),
-                      )
+                        ),*/
+                        )
                     : Container(),
-                Row(
-                  children: [
-                    Spacer(),
-                    IconButton(
-                      icon: Icon(
-                        Icons.edit,
-                        size: 25.0,
-                      ),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return getEditDialog(context, orProvider);
-                          },
-                        );
-                      },
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        orProvider.rm.releases
-                            .firstWhere((element) => element.id == releaseId)
-                            .addUserStory(
-                              UserStory(
-                                id: orProvider.rm.releases
-                                    .firstWhere(
-                                        (element) => element.id == releaseId)
-                                    .getNextUserStoryId(),
-                                releaseId: releaseId,
-                                name: name,
-                                storyPoints: storyPoints,
-                                description: description,
-                                discussion: discussion.toList(),
-                                users: users.toList(),
-                                priority: priority,
-                              ),
-                            );
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text('Copied userstory "$name"')));
-                        orProvider.rebuild();
-                      },
-                      icon: Icon(
-                        Icons.copy,
-                        size: 25.0,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return getDeleteDialog(context, orProvider);
-                            });
-                      },
-                      icon: Icon(
-                        Icons.delete,
-                        size: 25.0,
-                      ),
-                    ),
-                  ],
-                )
               ],
             ),
           );

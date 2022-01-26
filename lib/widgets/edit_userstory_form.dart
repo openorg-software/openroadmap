@@ -149,35 +149,31 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                       padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
                       child: SingleChildScrollView(
                         controller: ScrollController(),
-                        child: GridView.builder(
-                          shrinkWrap: true,
-                          gridDelegate:
-                              new SliverGridDelegateWithMaxCrossAxisExtent(
-                                  //crossAxisCount: 4,
-                                  maxCrossAxisExtent: 140,
-                                  mainAxisSpacing: 0,
-                                  childAspectRatio: 3),
-                          itemCount: orProvider.rm.users.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return ActionChip(
-                              avatar: widget.userStory.containsUserWithId(orProvider.rm.users[index].id)
-                                  ? Icon(Icons.remove)
-                                  : Icon(Icons.add),
-                              label: Text(orProvider.rm.users[index].name),
-                              backgroundColor: orProvider.rm.users[index].color,
-                              onPressed: () {
-                                if (widget.userStory.containsUserWithId(orProvider.rm.users[index].id)) {
-                                  widget.userStory.users
-                                      .remove(widget.userStory.users.firstWhere((User u) => u.id ==orProvider.rm.users[index].id
-                                  ));
-                                } else {
-                                  widget.userStory.users
-                                      .add(orProvider.rm.users[index]);
-                                }
-                                orProvider.rebuild();
-                              },
+                        child: Wrap(
+                          children: orProvider.rm.users.map((User u) {
+                            return Container(
+                              padding: EdgeInsets.fromLTRB(4, 2, 4, 2),
+                              child: ActionChip(
+                                avatar:
+                                    widget.userStory.containsUserWithId(u.id)
+                                        ? Icon(Icons.remove)
+                                        : Icon(Icons.add),
+                                label: Text(u.name),
+                                backgroundColor: u.color,
+                                onPressed: () {
+                                  if (widget.userStory
+                                      .containsUserWithId(u.id)) {
+                                    widget.userStory.users.remove(widget
+                                        .userStory.users
+                                        .firstWhere((User u) => u.id == u.id));
+                                  } else {
+                                    widget.userStory.users.add(u);
+                                  }
+                                  orProvider.rebuild();
+                                },
+                              ),
                             );
-                          },
+                          }).toList(),
                         ),
                       ),
                     ),
