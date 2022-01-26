@@ -21,7 +21,7 @@ class User {
       '"id"': id,
       '"name"': '"$name"',
       '"color"':
-          '"0x${color.alpha.toRadixString(16)}${color.red.toRadixString(16)}${color.green.toRadixString(16)}${color.blue.toRadixString(16)}"'
+          '"0x${color.alpha.toRadixString(16).length == 1 ? '0${color.alpha.toRadixString(16)}' : color.alpha.toRadixString(16)}${color.red.toRadixString(16).length == 1 ? '0${color.red.toRadixString(16)}' : color.red.toRadixString(16)}${color.green.toRadixString(16).length == 1 ? '0${color.green.toRadixString(16)}' : color.green.toRadixString(16)}${color.blue.toRadixString(16).length == 1 ? '0${color.blue.toRadixString(16)}' : color.blue.toRadixString(16)}"'
     };
   }
 
