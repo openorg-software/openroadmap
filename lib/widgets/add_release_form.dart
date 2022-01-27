@@ -34,6 +34,7 @@ class _AddReleaseForm extends State<AddReleaseForm> {
         children: [
           TextFormField(
             initialValue: name,
+            maxLength: 32,
             decoration: InputDecoration(
               border: UnderlineInputBorder(),
               hintText: 'Release name',

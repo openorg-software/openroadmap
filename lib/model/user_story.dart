@@ -128,9 +128,12 @@ class UserStory extends StatelessWidget {
             ),
             title: Row(
               children: [
-                Text(
-                  name,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                Container(
+                  width: 170,
+                  child: Text(
+                    name,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
                 ),
                 Spacer(),
                 IconButton(
