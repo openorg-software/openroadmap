@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:openroadmap/model/release.dart';
 import 'package:openroadmap/model/user_story.dart';
 import 'package:openroadmap/util/or_provider.dart';
+import 'package:openroadmap/util/setting_provider.dart';
 import 'package:openroadmap/util/theme_provider.dart';
 import 'package:openroadmap/widgets/add_release_form.dart';
 import 'package:openroadmap/widgets/edit_roadmap_form.dart';
@@ -11,10 +12,13 @@ import 'package:provider/provider.dart';
 
 void main() => runApp(
       ChangeNotifierProvider(
-        create: (context) => ThemeProvider(),
+        create: (context) => SettingProvider(),
         child: ChangeNotifierProvider(
-          create: (context) => ORProvider(),
-          child: App(),
+          create: (context) => ThemeProvider(),
+          child: ChangeNotifierProvider(
+            create: (context) => ORProvider(),
+            child: App(),
+          ),
         ),
       ),
     );
@@ -381,6 +385,13 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                 ),
                 Consumer<ThemeProvider>(
                     builder: (context, themeProvider, child) {
+                  return VerticalDivider(
+                      color: themeProvider.darkMode
+                          ? Colors.white70
+                          : Colors.black26);
+                }),
+                Consumer<ThemeProvider>(
+                    builder: (context, themeProvider, child) {
                   return Tooltip(
                     message: themeProvider.darkMode
                         ? 'Enable light mode'
@@ -393,6 +404,13 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                     ),
                   );
                 }),
+                Tooltip(
+                  message: 'OpenRoadmap Settings',
+                  child: IconButton(
+                    onPressed: () => {},
+                    icon: Icon(Icons.settings),
+                  ),
+                )
               ]),
           body: SingleChildScrollView(
             scrollDirection: Axis.horizontal,

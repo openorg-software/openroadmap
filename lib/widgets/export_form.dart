@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:openroadmap/export/exporter.dart';
 import 'package:openroadmap/export/plantuml_exporter.dart';
+import 'package:openroadmap/export/plantuml_generator.dart';
 import 'package:openroadmap/util/or_provider.dart';
+import 'package:openroadmap/util/setting_provider.dart';
 import 'package:provider/provider.dart';
 
 class ExportForm extends StatefulWidget {
@@ -55,6 +57,40 @@ class _ExportForm extends State<ExportForm> {
               );
             },
           ),
+        ),
+        Column(
+          children: [
+            Text('Preview:'),
+            Consumer<SettingProvider>(
+                builder: (context, settingProvider, child) {
+              return Consumer<ORProvider>(
+                  builder: (context, orProvider, child) {
+                if (settingProvider.isPlantUmlJarPathConfigured) {
+                  return FutureBuilder<Image>(
+                    future: PlantUmlGenerator.generateImageFromPlantUml(
+                        PlantUmlGenerator.generatePlantUmlCode(orProvider),
+                        settingProvider),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<Image> snapshot) {
+                      if (snapshot.hasData) {
+                        return snapshot.data!;
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    },
+                  );
+                } else {
+                  return Column(
+                    children: [
+                      Icon(Icons.warning)
+                      ,Text(
+                    'Please configure the PlantUML Jar Path in\nthe Settings to enable the preview.'),
+                    ],
+                  );
+                }
+              });
+            }),
+          ],
         ),
       ],
     );
