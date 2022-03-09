@@ -204,18 +204,6 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                   fontSize: 18,
                 ),
               ),
-              Consumer<ORProvider>(builder: (context, orProvider, child) {
-                return Container(
-                  padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
-                  child: ElevatedButton(
-                    child: Text('Add discussion'),
-                    onPressed: () {
-                      widget.userStory.discussion.add('');
-                      orProvider.rebuild();
-                    },
-                  ),
-                );
-              }),
               Container(
                 height: 200,
                 width: 600,
@@ -225,50 +213,67 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                       scrollDirection: Axis.vertical,
                       controller: ScrollController(),
                       shrinkWrap: true,
-                      itemCount: widget.userStory.discussion.length,
+                      itemCount: widget.userStory.discussion.length + 1,
                       itemBuilder: (BuildContext context, int index) {
-                        return Row(
-                          children: [
-                            Container(
-                              width: 550,
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  border: UnderlineInputBorder(),
-                                  hintText: 'New discussion...',
+                        if (index == widget.userStory.discussion.length) {
+                          return Consumer<ORProvider>(
+                            builder: (context, orProvider, child) {
+                              return Container(
+                                padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
+                                child: ElevatedButton(
+                                  child: Text('Add discussion'),
+                                  onPressed: () {
+                                    widget.userStory.discussion.add('');
+                                    orProvider.rebuild();
+                                  },
                                 ),
-                                initialValue:
-                                    widget.userStory.discussion[index],
-                                maxLines: null,
-                                keyboardType: TextInputType.multiline,
-                                onChanged: (value) {
-                                  widget.userStory.discussion[index] = value;
-                                },
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                String discussion =
-                                    widget.userStory.discussion[index];
-                                widget.userStory.discussion.remove(discussion);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Removed discussion.'),
-                                    action: SnackBarAction(
-                                      label: 'Revert',
-                                      onPressed: () {
-                                        widget.userStory.discussion
-                                            .add(discussion);
-                                      },
-                                    ),
+                              );
+                            },
+                          );
+                        } else {
+                          return Row(
+                            children: [
+                              Container(
+                                width: 550,
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                    border: UnderlineInputBorder(),
+                                    hintText: 'New discussion...',
                                   ),
-                                );
-
-                                orProvider.rebuild();
-                              },
-                              icon: Icon(Icons.delete),
-                            )
-                          ],
-                        );
+                                  initialValue:
+                                      widget.userStory.discussion[index],
+                                  maxLines: null,
+                                  keyboardType: TextInputType.multiline,
+                                  onChanged: (value) {
+                                    widget.userStory.discussion[index] = value;
+                                  },
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  String discussion =
+                                      widget.userStory.discussion[index];
+                                  widget.userStory.discussion
+                                      .remove(discussion);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Removed discussion.'),
+                                      action: SnackBarAction(
+                                        label: 'Revert',
+                                        onPressed: () {
+                                          widget.userStory.discussion
+                                              .add(discussion);
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                  orProvider.rebuild();
+                                },
+                                icon: Icon(Icons.delete),
+                              )
+                            ],
+                          );
+                        }
                       },
                     );
                   },
