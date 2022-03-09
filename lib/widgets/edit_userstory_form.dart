@@ -64,12 +64,6 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
               hintText: '...',
               labelText: 'Description:',
             ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please insert user story description';
-              }
-              return null;
-            },
             onSaved: (text) {
               this.description = text!;
             },

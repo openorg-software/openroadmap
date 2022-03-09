@@ -216,74 +216,126 @@ class Release extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        InkWell(
-                          child: Icon(
-                            Icons.add,
-                            size: 30.0,
-                          ),
-                          radius: 64,
-                          borderRadius: BorderRadius.all(Radius.circular(16)),
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return SimpleDialog(
-                                  contentPadding: EdgeInsets.all(10),
-                                  backgroundColor:
-                                      Theme.of(context).dialogBackgroundColor,
-                                  children: [
-                                    Container(
-                                      width: 500,
-                                      child: Column(
-                                        children: [
-                                          Row(children: [
-                                            Text(
-                                              'Add User Story',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            IconButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                              icon: Icon(Icons.close),
-                                            ),
-                                          ]),
-                                          AddUserStoryForm(
-                                            release: this,
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                        ),
-                        Spacer(),
-                        InkWell(
-                          child: Container(
-                            margin: EdgeInsets.all(4),
+                        Tooltip(
+                          message: 'Add User Story',
+                          child: InkWell(
                             child: Icon(
-                              Icons.edit,
+                              Icons.add,
                               size: 30.0,
                             ),
+                            radius: 64,
+                            borderRadius: BorderRadius.all(Radius.circular(16)),
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return SimpleDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    backgroundColor:
+                                        Theme.of(context).dialogBackgroundColor,
+                                    children: [
+                                      Container(
+                                        width: 500,
+                                        child: Column(
+                                          children: [
+                                            Row(children: [
+                                              Text(
+                                                'Add User Story',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              IconButton(
+                                                onPressed: () =>
+                                                    Navigator.pop(context),
+                                                icon: Icon(Icons.close),
+                                              ),
+                                            ]),
+                                            AddUserStoryForm(
+                                              release: this,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
                           ),
-                          radius: 64,
-                          borderRadius: BorderRadius.all(Radius.circular(32)),
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return SimpleDialog(
-                                  contentPadding: EdgeInsets.all(10),
-                                  backgroundColor:
-                                      Theme.of(context).dialogBackgroundColor,
-                                  children: [
-                                    Row(
-                                      children: [
+                        ),
+                        Spacer(),
+                        Tooltip(
+                          message: 'Edit Release',
+                          child: InkWell(
+                            child: Container(
+                              margin: EdgeInsets.all(4),
+                              child: Icon(
+                                Icons.edit,
+                                size: 30.0,
+                              ),
+                            ),
+                            radius: 64,
+                            borderRadius: BorderRadius.all(Radius.circular(32)),
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return SimpleDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    backgroundColor:
+                                        Theme.of(context).dialogBackgroundColor,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            'Edit "$name"',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                            icon: Icon(Icons.close),
+                                          ),
+                                        ],
+                                      ),
+                                      EditReleaseForm(
+                                        release: this,
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        Tooltip(
+                          message: 'Delete Release',
+                          child: InkWell(
+                            child: Container(
+                              margin: EdgeInsets.all(4),
+                              child: Icon(
+                                Icons.delete,
+                                size: 30.0,
+                              ),
+                            ),
+                            radius: 64,
+                            borderRadius: BorderRadius.all(Radius.circular(32)),
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return SimpleDialog(
+                                    contentPadding: EdgeInsets.all(10),
+                                    backgroundColor:
+                                        Theme.of(context).dialogBackgroundColor,
+                                    children: [
+                                      Row(children: [
                                         Text(
-                                          'Edit "$name"',
+                                          'Delete "$name"',
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20,
@@ -294,66 +346,26 @@ class Release extends StatelessWidget {
                                               Navigator.pop(context),
                                           icon: Icon(Icons.close),
                                         ),
-                                      ],
-                                    ),
-                                    EditReleaseForm(
-                                      release: this,
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                        ),
-                        InkWell(
-                          child: Container(
-                            margin: EdgeInsets.all(4),
-                            child: Icon(
-                              Icons.delete,
-                              size: 30.0,
-                            ),
-                          ),
-                          radius: 64,
-                          borderRadius: BorderRadius.all(Radius.circular(32)),
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return SimpleDialog(
-                                  contentPadding: EdgeInsets.all(10),
-                                  backgroundColor:
-                                      Theme.of(context).dialogBackgroundColor,
-                                  children: [
-                                    Row(children: [
-                                      Text(
-                                        'Delete "$name"',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20,
+                                      ]),
+                                      Container(
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 16, 0, 0),
+                                        child: ElevatedButton(
+                                          child: Text('Confirm'),
+                                          onPressed: () {
+                                            orProvider.rm
+                                                .deleteRelease(this, context);
+                                            orProvider.rebuild();
+                                            Navigator.pop(context);
+                                          },
                                         ),
                                       ),
-                                      IconButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        icon: Icon(Icons.close),
-                                      ),
-                                    ]),
-                                    Container(
-                                      padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
-                                      child: ElevatedButton(
-                                        child: Text('Confirm'),
-                                        onPressed: () {
-                                          orProvider.rm
-                                              .deleteRelease(this, context);
-                                          orProvider.rebuild();
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          ),
                         ),
                       ],
                     ),

@@ -275,102 +275,122 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               actions: [
-                IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return SimpleDialog(
-                          contentPadding: EdgeInsets.all(10),
-                          backgroundColor:
-                              Theme.of(context).dialogBackgroundColor,
-                          children: [
-                            Container(
-                              width: 500,
-                              child: Column(children: [
-                                Row(children: [
-                                  Text(
-                                    'Add Release',
+                Tooltip(
+                  message: 'Add Release',
+                  child: IconButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return SimpleDialog(
+                            contentPadding: EdgeInsets.all(10),
+                            backgroundColor:
+                                Theme.of(context).dialogBackgroundColor,
+                            children: [
+                              Container(
+                                width: 500,
+                                child: Column(children: [
+                                  Row(children: [
+                                    Text(
+                                      'Add Release',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    IconButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      icon: Icon(Icons.close),
+                                    ),
+                                  ]),
+                                  AddReleaseForm(),
+                                ]),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    icon: Icon(
+                      Icons.add,
+                    ),
+                  ),
+                ),
+                Tooltip(
+                  message: 'Edit Roadmap',
+                  child: IconButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return buildEditRoadmapDialog(context, orProvider);
+                        },
+                      );
+                    },
+                    icon: Icon(
+                      Icons.edit,
+                    ),
+                  ),
+                ),
+                Tooltip(
+                  message: 'Save Roadmap',
+                  child: IconButton(
+                    onPressed: () => orProvider.saveRoadmap(context),
+                    icon: Icon(Icons.save),
+                  ),
+                ),
+                Tooltip(
+                  message: 'Open Roadmap',
+                  child: IconButton(
+                    onPressed: () => orProvider.loadRoadmap(context),
+                    icon: Icon(Icons.upload_file),
+                  ),
+                ),
+                Tooltip(
+                  message: 'Export Roadmap',
+                  child: IconButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return SimpleDialog(
+                            contentPadding: EdgeInsets.all(10),
+                            backgroundColor:
+                                Theme.of(context).dialogBackgroundColor,
+                            children: [
+                              Container(
+                                width: 500,
+                                child: ListTile(
+                                  title: Text(
+                                    'Export Roadmap',
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   ),
-                                  IconButton(
+                                  trailing: IconButton(
                                     onPressed: () => Navigator.pop(context),
                                     icon: Icon(Icons.close),
                                   ),
-                                ]),
-                                AddReleaseForm(),
-                              ]),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  icon: Icon(
-                    Icons.add,
-                  ),
-                ),
-                IconButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return buildEditRoadmapDialog(
-                                  context, orProvider);
-                            },
+                                  subtitle: ExportForm(),
+                                ),
+                              ),
+                            ],
                           );
                         },
-                        icon: Icon(
-                          Icons.edit,
-                        ),
-                      ),
-                    IconButton(
-                        onPressed: () => orProvider.saveRoadmap(context),
-                        icon: Icon(Icons.save),
-                      ),
-                IconButton(
-                  onPressed: () => orProvider.loadRoadmap(context),
-                  icon: Icon(Icons.upload_file),
-                ),
-                IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return SimpleDialog(
-                          contentPadding: EdgeInsets.all(10),
-                          backgroundColor:
-                              Theme.of(context).dialogBackgroundColor,
-                          children: [
-                            Container(
-                              width: 500,
-                              child: ListTile(
-                                title: Text(
-                                  'Export Roadmap',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                trailing: IconButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  icon: Icon(Icons.close),
-                                ),
-                                subtitle: ExportForm(),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  icon: Icon(Icons.share),
+                      );
+                    },
+                    icon: Icon(Icons.share),
+                  ),
                 ),
                 Consumer<ThemeProvider>(
                     builder: (context, themeProvider, child) {
-                  return IconButton(
-                    onPressed: () => themeProvider.toggleDarkMode(),
-                    icon: themeProvider.darkMode
-                        ? Icon(Icons.wb_sunny)
-                        : Icon(Icons.dark_mode),
+                  return Tooltip(
+                    message: themeProvider.darkMode
+                        ? 'Enable light mode'
+                        : 'Enable dark mode',
+                    child: IconButton(
+                      onPressed: () => themeProvider.toggleDarkMode(),
+                      icon: themeProvider.darkMode
+                          ? Icon(Icons.wb_sunny)
+                          : Icon(Icons.dark_mode),
+                    ),
                   );
                 }),
               ]),

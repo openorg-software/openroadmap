@@ -138,59 +138,68 @@ class UserStory extends StatelessWidget {
                   ),
                 ),
                 Spacer(),
-                IconButton(
-                  icon: Icon(
-                    Icons.edit,
-                    size: 25.0,
-                  ),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return getEditDialog(context, orProvider);
-                      },
-                    );
-                  },
-                ),
-                IconButton(
-                  onPressed: () {
-                    orProvider.rm.releases
-                        .firstWhere((element) => element.id == releaseId)
-                        .addUserStory(
-                          UserStory(
-                            id: orProvider.rm.releases
-                                .firstWhere(
-                                    (element) => element.id == releaseId)
-                                .getNextUserStoryId(),
-                            releaseId: releaseId,
-                            name: name,
-                            storyPoints: storyPoints,
-                            description: description,
-                            discussion: discussion.toList(),
-                            users: users.toList(),
-                            priority: priority,
-                          ),
-                        );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Copied userstory "$name"')));
-                    orProvider.rebuild();
-                  },
-                  icon: Icon(
-                    Icons.copy,
-                    size: 25.0,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    showDialog(
+                Tooltip(
+                  message: 'Edit',
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.edit,
+                      size: 25.0,
+                    ),
+                    onPressed: () {
+                      showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return getDeleteDialog(context, orProvider);
-                        });
-                  },
-                  icon: Icon(
-                    Icons.delete,
-                    size: 25.0,
+                          return getEditDialog(context, orProvider);
+                        },
+                      );
+                    },
+                  ),
+                ),
+                Tooltip(
+                  message: 'Duplicate',
+                  child: IconButton(
+                    onPressed: () {
+                      orProvider.rm.releases
+                          .firstWhere((element) => element.id == releaseId)
+                          .addUserStory(
+                            UserStory(
+                              id: orProvider.rm.releases
+                                  .firstWhere(
+                                      (element) => element.id == releaseId)
+                                  .getNextUserStoryId(),
+                              releaseId: releaseId,
+                              name: name,
+                              storyPoints: storyPoints,
+                              description: description,
+                              discussion: discussion.toList(),
+                              users: users.toList(),
+                              priority: priority,
+                            ),
+                          );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Copied userstory "$name"')));
+                      orProvider.rebuild();
+                    },
+                    icon: Icon(
+                      Icons.copy,
+                      size: 25.0,
+                    ),
+                  ),
+                ),
+                Tooltip(
+                  message: 'Delete',
+                  child: IconButton(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return getDeleteDialog(context, orProvider);
+                          });
+                    },
+                    icon: Icon(
+                      Icons.delete,
+                      size: 25.0,
+                    ),
                   ),
                 ),
               ],
@@ -235,35 +244,8 @@ class UserStory extends StatelessWidget {
                               ),
                             );
                           }).toList(),
-                        )
-
-                        /*GridView.builder(
-                          itemCount: users.length,
-                          shrinkWrap: true,
-                          gridDelegate:
-                              new SliverGridDelegateWithMaxCrossAxisExtent(
-                                  maxCrossAxisExtent: 100,
-                                  mainAxisSpacing: 4,
-                                  childAspectRatio: 2.5),
-                          itemBuilder: (BuildContext context, int index) {
-                            return Center(
-                              child: Chip(
-                                label: Text(orProvider.rm.users
-                                    .firstWhere(
-                                        (User u) => u.id == users[index].id)
-                                    .name),
-                                labelPadding: EdgeInsets.fromLTRB(4, 0, 4, 0),
-                                shadowColor: Colors.black87,
-                                elevation: 2,
-                                backgroundColor: orProvider.rm.users
-                                    .firstWhere(
-                                        (User u) => u.id == users[index].id)
-                                    .color,
-                              ),
-                            );
-                          },
-                        ),*/
-                        )
+                        ),
+                      )
                     : Container(),
               ],
             ),
