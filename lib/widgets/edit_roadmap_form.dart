@@ -3,6 +3,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:openroadmap/model/roadmap.dart';
 import 'package:openroadmap/model/user.dart';
 import 'package:openroadmap/provider/backend_provider_interface.dart';
+import 'package:openroadmap/provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class EditRoadmapForm extends StatefulWidget {
@@ -182,47 +183,53 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
                               ),
                             ),
                             IconButton(
-                                onPressed: () {
-                                  Color pickerColor =
-                                      widget.roadmap.users[index].color;
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return SimpleDialog(
-                                        children: [
-                                          ListTile(
-                                            title: Text(
-                                              'Select Color',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            trailing: IconButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(context),
-                                              icon: Icon(Icons.close),
+                              onPressed: () {
+                                Color pickerColor =
+                                    widget.roadmap.users[index].color;
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return SimpleDialog(
+                                      children: [
+                                        ListTile(
+                                          title: Text(
+                                            'Select Color',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                8, 0, 8, 0),
-                                            child: ColorPicker(
-                                                pickerColor: pickerColor,
-                                                onColorChanged: (color) {
-                                                  widget.roadmap.users[index]
-                                                      .color = color;
-                                                  orProvider.rebuild();
-                                                }),
+                                          trailing: IconButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                            icon: Icon(Icons.close),
                                           ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                                icon: Icon(
-                                  Icons.color_lens,
-                                  color: widget.roadmap.users[index].color,
-                                )),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(
+                                              8, 0, 8, 0),
+                                          child: ColorPicker(
+                                              pickerColor: pickerColor,
+                                              onColorChanged: (color) {
+                                                widget.roadmap.users[index]
+                                                    .color = color;
+                                                orProvider.rebuild();
+                                              }),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              icon: Icon(
+                                Icons.color_lens,
+                                color: widget.roadmap.users[index].color,
+                              ),
+                              color: widget.roadmap.users[index].color
+                                          .computeLuminance() <
+                                      ThemeProvider.brigthToDarkBorder
+                                  ? Colors.grey
+                                  : Colors.white,
+                            ),
                             IconButton(
                               onPressed: () {
                                 User user = widget.roadmap.users[index];

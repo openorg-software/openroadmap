@@ -6,6 +6,7 @@ import 'package:openroadmap/export/exporter.dart';
 import 'package:openroadmap/model/release.dart';
 import 'package:openroadmap/model/user_story.dart';
 import 'package:openroadmap/provider/backend_provider_interface.dart';
+import 'package:openroadmap/util/storypoint_calculator.dart';
 
 class PlantUMLExporter extends StatefulWidget implements Exporter {
   @override
@@ -48,12 +49,12 @@ class PlantUMLExporter extends StatefulWidget implements Exporter {
         if (prev == null) {
           content +=
               '[{${r.id}} ${wp.name}] as [{${r.id}} ${wp.name}] starts at [{${r.id}} ${r.name}]\'s start '
-              'and lasts ${r.getDurationFromStoryPoints(wp.storyPoints).inDays} days';
+              'and lasts ${StoryPointCalculator.getDurationFromStoryPoints(wp.storyPoints, r.sprintLength.inDays, r.storyPointsPerSprint).inDays} days';
           prev = wp;
         } else {
           content +=
               '[{${r.id}} ${wp.name}] as [{${r.id}} ${wp.name}] starts at [{${r.id}} ${prev.name}]\'s end '
-              'and lasts ${r.getDurationFromStoryPoints(wp.storyPoints).inDays} days';
+              'and lasts ${StoryPointCalculator.getDurationFromStoryPoints(wp.storyPoints, r.sprintLength.inDays, r.storyPointsPerSprint).inDays} days';
           prev = wp;
         }
 

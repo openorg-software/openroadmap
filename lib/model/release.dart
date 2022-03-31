@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/user_story.dart';
 import 'package:openroadmap/provider/backend_provider_interface.dart';
+import 'package:openroadmap/util/storypoint_calculator.dart';
 import 'package:openroadmap/widgets/add_userstory_form.dart';
 import 'package:openroadmap/widgets/edit_release_form.dart';
 import 'package:provider/provider.dart';
@@ -125,25 +126,8 @@ class Release extends StatelessWidget {
   }
 
   DateTime getEndDate(BackendProviderInterface orProvider) {
-    return startDate.add(getDurationFromStoryPoints(getStoryPoints()));
-  }
-
-  Duration getDurationFromStoryPoints(num storyPoints) {
-    // Get duration per storypoint
-    return Duration(
-        days: (storyPoints * (sprintLength.inDays / storyPointsPerSprint))
-            .toInt());
-  }
-
-  int getStoryPointDifference(DateTime startDate, DateTime endDate) {
-    Duration difference;
-    if (startDate.isAfter(endDate)) {
-      difference = startDate.difference(endDate);
-    } else {
-      difference = endDate.difference(startDate);
-    }
-    return (difference.inDays * (storyPointsPerSprint / sprintLength.inDays))
-        .toInt();
+    return startDate.add(StoryPointCalculator.getDurationFromStoryPoints(
+        getStoryPoints(), sprintLength.inDays, storyPointsPerSprint));
   }
 
   // Get the end date as string
@@ -204,21 +188,27 @@ class Release extends StatelessWidget {
                         'Start: ${getStartDate()} - End: ${getEndDateString(orProvider)}'),
                     Text('Story Points: ${getStoryPoints()}'),
                     Text(
-                        'Duration in Days: ~${getDurationFromStoryPoints(getStoryPoints()).inDays}'),
+                        'Duration in Days: ~${StoryPointCalculator.getDurationFromStoryPoints(getStoryPoints(), sprintLength.inDays, storyPointsPerSprint).inDays}'),
                     Text(
                       'Target Date: ${getTargetDate()}',
                       style: TextStyle(
                         color: targetDate.isAfter(startDate.add(
-                                getDurationFromStoryPoints(getStoryPoints())))
+                                StoryPointCalculator.getDurationFromStoryPoints(
+                                    getStoryPoints(),
+                                    sprintLength.inDays,
+                                    storyPointsPerSprint)))
                             ? Colors.green
                             : Colors.red,
                       ),
                     ),
                     Text(
-                      'Story Point Difference: ~${getStoryPointDifference(targetDate, getEndDate(orProvider))}',
+                      'Story Point Difference: ~${StoryPointCalculator.getStoryPointDifference(targetDate, getEndDate(orProvider), sprintLength.inDays, storyPointsPerSprint)}',
                       style: TextStyle(
                         color: targetDate.isAfter(startDate.add(
-                                getDurationFromStoryPoints(getStoryPoints())))
+                                StoryPointCalculator.getDurationFromStoryPoints(
+                                    getStoryPoints(),
+                                    sprintLength.inDays,
+                                    storyPointsPerSprint)))
                             ? Colors.green
                             : Colors.red,
                       ),

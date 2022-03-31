@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:openroadmap/model/user.dart';
 import 'package:openroadmap/model/user_story.dart';
 import 'package:openroadmap/provider/backend_provider_interface.dart';
+import 'package:openroadmap/provider/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class EditUserStoryForm extends StatefulWidget {
@@ -154,11 +155,29 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                             return Container(
                               padding: EdgeInsets.fromLTRB(4, 2, 4, 2),
                               child: ActionChip(
-                                avatar:
-                                    widget.userStory.containsUserWithId(u.id)
-                                        ? Icon(Icons.remove)
-                                        : Icon(Icons.add),
-                                label: Text(u.name),
+                                avatar: widget.userStory
+                                        .containsUserWithId(u.id)
+                                    ? Icon(
+                                        Icons.remove,
+                                        color: u.color.computeLuminance() >
+                                                ThemeProvider.brigthToDarkBorder
+                                            ? Colors.black
+                                            : Colors.white,
+                                      )
+                                    : Icon(
+                                        Icons.add,
+                                        color: u.color.computeLuminance() >
+                                                ThemeProvider.brigthToDarkBorder
+                                            ? Colors.black
+                                            : Colors.white,
+                                      ),
+                                label: Text(u.name,
+                                    style: TextStyle(
+                                      color: u.color.computeLuminance() >
+                                              ThemeProvider.brigthToDarkBorder
+                                          ? Colors.black
+                                          : Colors.white,
+                                    )),
                                 backgroundColor: u.color,
                                 onPressed: () {
                                   if (widget.userStory

@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/user.dart';
 import 'package:openroadmap/provider/backend_provider_interface.dart';
+import 'package:openroadmap/provider/theme_provider.dart';
 import 'package:openroadmap/util/base64_helper.dart';
+import 'package:openroadmap/util/storypoint_calculator.dart';
 import 'package:openroadmap/widgets/edit_userstory_form.dart';
 import 'package:openroadmap/widgets/priority_rating.dart';
 import 'package:provider/provider.dart';
@@ -199,7 +201,7 @@ class UserStory extends StatelessWidget {
               children: [
                 Text('Story Points: $storyPoints'),
                 Text(
-                    'Duration in Days: ~${orProvider.getReleaseById(releaseId).getDurationFromStoryPoints(storyPoints).inDays}'),
+                    'Duration in Days: ~${StoryPointCalculator.getDurationFromStoryPoints(storyPoints, orProvider.getReleaseById(releaseId).sprintLength.inDays, orProvider.getReleaseById(releaseId).storyPointsPerSprint).inDays}'),
                 priority > 0 ? PriorityRating(userStory: this) : Container(),
                 users.length > 0 ? Divider() : Container(),
                 users.length > 0 ? Text('Users:') : Container(),
@@ -211,9 +213,20 @@ class UserStory extends StatelessWidget {
                             return Container(
                               padding: EdgeInsets.fromLTRB(4, 2, 4, 2),
                               child: Chip(
-                                label: Text(orProvider.rm.users
-                                    .firstWhere((User u) => u.id == um.id)
-                                    .name),
+                                label: Text(
+                                    orProvider.rm.users
+                                        .firstWhere((User u) => u.id == um.id)
+                                        .name,
+                                    style: TextStyle(
+                                      color: orProvider.rm.users
+                                                  .firstWhere(
+                                                      (User u) => u.id == um.id)
+                                                  .color
+                                                  .computeLuminance() >
+                                              ThemeProvider.brigthToDarkBorder
+                                          ? Colors.black
+                                          : Colors.white,
+                                    )),
                                 labelPadding: EdgeInsets.fromLTRB(4, 0, 4, 0),
                                 shadowColor: Colors.black87,
                                 elevation: 2,
