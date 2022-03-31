@@ -101,7 +101,9 @@ class DesktopProvider with ChangeNotifier implements BackendProviderInterface {
 
     if (result != null) {
       File file = File(result.files.single.path!);
-      rm = Roadmap.fromJson(jsonDecode(file.readAsStringSync()));
+      frm = Future.delayed(Duration(seconds: 0),
+              () => Roadmap.fromJson(jsonDecode(file.readAsStringSync())))
+          .then((value) => this.rm = value);
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Loaded: ${result.files.single.path}')));
       rebuild();

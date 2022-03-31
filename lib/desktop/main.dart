@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:openroadmap/model/release.dart';
 import 'package:openroadmap/model/roadmap.dart';
 import 'package:openroadmap/model/user_story.dart';
+import 'package:openroadmap/provider/backend_provider_interface.dart';
 import 'package:openroadmap/provider/desktop_provider.dart';
 import 'package:openroadmap/provider/theme_provider.dart';
 import 'package:openroadmap/widgets/add_release_form.dart';
@@ -13,7 +14,7 @@ import 'package:provider/provider.dart';
 void main() => runApp(
       ChangeNotifierProvider(
         create: (context) => ThemeProvider(),
-        child: ChangeNotifierProvider<DesktopProvider>(
+        child: ChangeNotifierProvider<BackendProviderInterface>(
           create: (context) => DesktopProvider(),
           builder: (context, child) {
             return App();
@@ -48,7 +49,8 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
   }
 
   buildItemDragTarget(int releaseId, int targetUserStoryId, double height) {
-    return Consumer<DesktopProvider>(builder: (context, orProvider, child) {
+    return Consumer<BackendProviderInterface>(
+        builder: (context, orProvider, child) {
       return DragTarget<UserStory>(
         // Ensure user story is only dropped on other user story or empty list
         onWillAccept: (data) {
@@ -109,7 +111,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
   }
 
   buildHeader(Release release) {
-    return Consumer<DesktopProvider>(
+    return Consumer<BackendProviderInterface>(
       builder: (context, orProvider, child) {
         return Stack(
           // The header
@@ -269,7 +271,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DesktopProvider>(
+    return Consumer<BackendProviderInterface>(
       builder: (context, orProvider, child) {
         return FutureBuilder(
             future: orProvider.frm,
@@ -414,7 +416,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
 }
 
 SimpleDialog buildEditRoadmapDialog(
-    BuildContext context, DesktopProvider orProvider) {
+    BuildContext context, BackendProviderInterface orProvider) {
   return SimpleDialog(
     contentPadding: EdgeInsets.all(10),
     backgroundColor: Theme.of(context).dialogBackgroundColor,
