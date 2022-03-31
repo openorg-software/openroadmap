@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/user_story.dart';
-import 'package:openroadmap/util/or_provider.dart';
+import 'package:openroadmap/provider/backend_provider_interface.dart';
 import 'package:openroadmap/widgets/add_userstory_form.dart';
 import 'package:openroadmap/widgets/edit_release_form.dart';
 import 'package:provider/provider.dart';
@@ -124,7 +124,7 @@ class Release extends StatelessWidget {
     return '$day.$month.${targetDate.year}';
   }
 
-  DateTime getEndDate(ORProvider orProvider) {
+  DateTime getEndDate(BackendProviderInterface orProvider) {
     return startDate.add(getDurationFromStoryPoints(getStoryPoints()));
   }
 
@@ -147,7 +147,7 @@ class Release extends StatelessWidget {
   }
 
   // Get the end date as string
-  String getEndDateString(ORProvider orProvider) {
+  String getEndDateString(BackendProviderInterface orProvider) {
     DateTime endDate = getEndDate(orProvider);
     String day = endDate.day < 10 ? '0${endDate.day}' : '${endDate.day}';
     String month =
@@ -183,7 +183,7 @@ class Release extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ORProvider>(
+    return Consumer<BackendProviderInterface>(
       builder: (context, orProvider, child) {
         return Column(
           children: [

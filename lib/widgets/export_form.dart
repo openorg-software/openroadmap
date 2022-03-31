@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:openroadmap/export/exporter.dart';
 import 'package:openroadmap/export/plantuml_exporter.dart';
-import 'package:openroadmap/util/or_provider.dart';
+import 'package:openroadmap/provider/backend_provider_interface.dart';
 import 'package:provider/provider.dart';
 
 class ExportForm extends StatefulWidget {
@@ -42,7 +42,7 @@ class _ExportForm extends State<ExportForm> {
             }),
         Container(
           padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
-          child: Consumer<ORProvider>(
+          child: Consumer<BackendProviderInterface>(
             builder: (context, orProvider, child) {
               return ElevatedButton(
                 child: Text('Export'),

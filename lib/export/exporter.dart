@@ -1,5 +1,5 @@
-import 'package:openroadmap/util/or_provider.dart';
+import 'package:openroadmap/provider/backend_provider_interface.dart';
 
 abstract class Exporter {
-  void export(ORProvider orProvider);
+  void export(BackendProviderInterface orProvider);
 }

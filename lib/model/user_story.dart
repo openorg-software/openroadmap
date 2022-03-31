@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/user.dart';
+import 'package:openroadmap/provider/backend_provider_interface.dart';
 import 'package:openroadmap/util/base64_helper.dart';
-import 'package:openroadmap/util/or_provider.dart';
 import 'package:openroadmap/widgets/edit_userstory_form.dart';
 import 'package:openroadmap/widgets/priority_rating.dart';
 import 'package:provider/provider.dart';
@@ -120,7 +120,8 @@ class UserStory extends StatelessWidget {
       margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: Container(
         decoration: BoxDecoration(),
-        child: Consumer<ORProvider>(builder: (context, orProvider, child) {
+        child: Consumer<BackendProviderInterface>(
+            builder: (context, orProvider, child) {
           return ListTile(
             contentPadding: EdgeInsets.symmetric(
               horizontal: 20.0,
@@ -260,7 +261,8 @@ class UserStory extends StatelessWidget {
     );
   }
 
-  SimpleDialog getEditDialog(BuildContext context, ORProvider orProvider) {
+  SimpleDialog getEditDialog(
+      BuildContext context, BackendProviderInterface orProvider) {
     return SimpleDialog(
       contentPadding: EdgeInsets.all(16),
       backgroundColor: Theme.of(context).dialogBackgroundColor,
@@ -292,7 +294,8 @@ class UserStory extends StatelessWidget {
     );
   }
 
-  SimpleDialog getDeleteDialog(BuildContext context, ORProvider orProvider) {
+  SimpleDialog getDeleteDialog(
+      BuildContext context, BackendProviderInterface orProvider) {
     return SimpleDialog(
       contentPadding: EdgeInsets.all(8),
       backgroundColor: Theme.of(context).dialogBackgroundColor,

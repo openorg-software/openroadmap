@@ -1,51 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/release.dart';
 import 'package:openroadmap/model/user_story.dart';
-import 'package:openroadmap/util/or_provider.dart';
-import 'package:openroadmap/util/theme_provider.dart';
-import 'package:openroadmap/widgets/add_release_form.dart';
-import 'package:openroadmap/widgets/edit_roadmap_form.dart';
-import 'package:openroadmap/widgets/export_form.dart';
+import 'package:openroadmap/provider/backend_provider_interface.dart';
+import 'package:openroadmap/provider/theme_provider.dart';
 import 'package:openroadmap/widgets/hover_widget.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(
-      ChangeNotifierProvider(
-        create: (context) => ThemeProvider(),
-        child: ChangeNotifierProvider(
-          create: (context) => ORProvider(),
-          child: App(),
-        ),
-      ),
-    );
+class KanbanList extends StatefulWidget {
+  Release release;
+  List<UserStory> items;
+  bool darkBackground;
 
-class App extends StatelessWidget {
+  String email;
+  KanbanList({
+    required this.email,
+    required this.release,
+    required this.items,
+    required this.darkBackground,
+    Key? key,
+  }) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(builder: (context, themeProvider, child) {
-      return MaterialApp(
-        title: 'OpenRoadmap',
-        theme: themeProvider.getTheme(),
-        home: OpenRoadmap(),
-        // home: DetailPage(),
-      );
-    });
-  }
+  _KanbanList createState() => _KanbanList();
 }
 
-class OpenRoadmap extends StatefulWidget {
-  @override
-  _OpenRoadmapState createState() => _OpenRoadmapState();
-}
-
-class _OpenRoadmapState extends State<OpenRoadmap> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
+class _KanbanList extends State<KanbanList> {
   buildItemDragTarget(int releaseId, int targetUserStoryId, double height) {
-    return Consumer<ORProvider>(builder: (context, orProvider, child) {
+    return Consumer<BackendProviderInterface>(
+        builder: (context, orProvider, child) {
       return DragTarget<UserStory>(
         // Ensure user story is only dropped on other user story or empty list
         onWillAccept: (data) {
@@ -106,7 +88,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
   }
 
   buildHeader(Release release) {
-    return Consumer<ORProvider>(
+    return Consumer<BackendProviderInterface>(
       builder: (context, orProvider, child) {
         return Stack(
           // The header
@@ -196,25 +178,26 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
     );
   }
 
-  buildKanbanList(Release release, List<UserStory> items, bool darkBackground) {
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      color: darkBackground
+      color: widget.darkBackground
           ? Color.fromARGB(10, 0, 0, 0)
           : Color.fromARGB(10, 255, 255, 255),
       child: Column(
         children: [
-          buildHeader(release),
+          buildHeader(widget.release),
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
               controller: ScrollController(),
               child: Column(
                 children: [
-                  release.userStories.length > 0
+                  widget.release.userStories.length > 0
                       ? ListView.builder(
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
-                          itemCount: items.length,
+                          itemCount: widget.items.length,
                           controller: ScrollController(),
                           itemBuilder: (BuildContext context, int index) {
                             // A stack that provides:
@@ -223,13 +206,13 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                             return Stack(
                               children: [
                                 Draggable<UserStory>(
-                                  data: items[index],
-                                  child: items[index],
+                                  data: widget.items[index],
+                                  child: widget.items[index],
                                   // A card waiting to be dragged
                                   childWhenDragging: Opacity(
                                     // The card that's left behind
                                     opacity: 0.2,
-                                    child: items[index],
+                                    child: widget.items[index],
                                   ),
                                   feedback: Container(
                                     // The dragged user story
@@ -239,7 +222,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                                       child: Card(
                                         child: ListTile(
                                           title: Text(
-                                            items[index].name,
+                                            widget.items[index].name,
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold),
                                           ),
@@ -248,7 +231,9 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                                     ),
                                   ),
                                 ),
-                                buildItemDragTarget(release.id, items[index].id,
+                                buildItemDragTarget(
+                                    widget.release.id,
+                                    widget.items[index].id,
                                     ThemeProvider.tileHeight),
                               ],
                             );
@@ -263,168 +248,4 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
       ),
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<ORProvider>(
-      builder: (context, orProvider, child) {
-        return Scaffold(
-          appBar: AppBar(
-              title: Text(
-                'OpenRoadmap - ${orProvider.rm.name}',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return SimpleDialog(
-                          contentPadding: EdgeInsets.all(10),
-                          backgroundColor:
-                              Theme.of(context).dialogBackgroundColor,
-                          children: [
-                            Container(
-                              width: 500,
-                              child: Column(children: [
-                                Row(children: [
-                                  Text(
-                                    'Add Release',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  IconButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    icon: Icon(Icons.close),
-                                  ),
-                                ]),
-                                AddReleaseForm(),
-                              ]),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  icon: Icon(
-                    Icons.add,
-                  ),
-                ),
-                IconButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return buildEditRoadmapDialog(
-                                  context, orProvider);
-                            },
-                          );
-                        },
-                        icon: Icon(
-                          Icons.edit,
-                        ),
-                      ),
-                    IconButton(
-                        onPressed: () => orProvider.saveRoadmap(context),
-                        icon: Icon(Icons.save),
-                      ),
-                IconButton(
-                  onPressed: () => orProvider.loadRoadmap(context),
-                  icon: Icon(Icons.upload_file),
-                ),
-                IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return SimpleDialog(
-                          contentPadding: EdgeInsets.all(10),
-                          backgroundColor:
-                              Theme.of(context).dialogBackgroundColor,
-                          children: [
-                            Container(
-                              width: 500,
-                              child: ListTile(
-                                title: Text(
-                                  'Export Roadmap',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                trailing: IconButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  icon: Icon(Icons.close),
-                                ),
-                                subtitle: ExportForm(),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                  icon: Icon(Icons.share),
-                ),
-                Consumer<ThemeProvider>(
-                    builder: (context, themeProvider, child) {
-                  return IconButton(
-                    onPressed: () => themeProvider.toggleDarkMode(),
-                    icon: themeProvider.darkMode
-                        ? Icon(Icons.wb_sunny)
-                        : Icon(Icons.dark_mode),
-                  );
-                }),
-              ]),
-          body: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            controller: ScrollController(),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: orProvider.rm.releases.map((Release r) {
-                return Container(
-                  width: ThemeProvider.tileWidth,
-                  child: buildKanbanList(r, r.userStories,
-                      orProvider.rm.releases.indexOf(r) % 2 == 0),
-                );
-              }).toList(),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-SimpleDialog buildEditRoadmapDialog(
-    BuildContext context, ORProvider orProvider) {
-  return SimpleDialog(
-    contentPadding: EdgeInsets.all(10),
-    backgroundColor: Theme.of(context).dialogBackgroundColor,
-    children: [
-      Container(
-        width: 500,
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Text(
-                  'Edit Roadmap',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () => Navigator.pop(context),
-                  icon: Icon(Icons.close),
-                ),
-              ],
-            ),
-            EditRoadmapForm(
-              roadmap: orProvider.rm,
-            ),
-          ],
-        ),
-      ),
-    ],
-  );
 }

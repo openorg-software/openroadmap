@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:openroadmap/model/roadmap.dart';
 import 'package:openroadmap/model/user.dart';
-import 'package:openroadmap/util/or_provider.dart';
+import 'package:openroadmap/provider/backend_provider_interface.dart';
 import 'package:provider/provider.dart';
 
 class EditRoadmapForm extends StatefulWidget {
@@ -112,7 +112,7 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
           ),
           Container(
             padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
-            child: Consumer<ORProvider>(
+            child: Consumer<BackendProviderInterface>(
               builder: (context, orProvider, child) {
                 return ElevatedButton(
                   child: Text('Save'),
@@ -144,7 +144,8 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
                   fontSize: 18,
                 ),
               ),
-              Consumer<ORProvider>(builder: (context, orProvider, child) {
+              Consumer<BackendProviderInterface>(
+                  builder: (context, orProvider, child) {
                 return Container(
                   padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
                   child: ElevatedButton(
@@ -159,7 +160,7 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
               Container(
                 height: 200,
                 width: 350,
-                child: Consumer<ORProvider>(
+                child: Consumer<BackendProviderInterface>(
                   builder: (context, orProvider, child) {
                     return ListView.builder(
                       scrollDirection: Axis.vertical,

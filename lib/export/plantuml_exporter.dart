@@ -5,11 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:openroadmap/export/exporter.dart';
 import 'package:openroadmap/model/release.dart';
 import 'package:openroadmap/model/user_story.dart';
-import 'package:openroadmap/util/or_provider.dart';
+import 'package:openroadmap/provider/backend_provider_interface.dart';
 
 class PlantUMLExporter extends StatefulWidget implements Exporter {
   @override
-  void export(ORProvider orProvider) async {
+  void export(BackendProviderInterface orProvider) async {
     // Create Gantt Chart String
     String plantuml = '@startuml\n';
     plantuml += 'projectscale quarterly zoom 4\n';

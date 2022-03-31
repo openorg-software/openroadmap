@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/release.dart';
 import 'package:openroadmap/model/user_story.dart';
-import 'package:openroadmap/util/or_provider.dart';
+import 'package:openroadmap/provider/backend_provider_interface.dart';
 import 'package:provider/provider.dart';
 
 class AddUserStoryForm extends StatefulWidget {
@@ -92,7 +92,7 @@ class _AddUserStoryForm extends State<AddUserStoryForm> {
           ),
           Container(
             padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
-            child: Consumer<ORProvider>(
+            child: Consumer<BackendProviderInterface>(
               builder: (context, orProvider, child) {
                 return ElevatedButton(
                   child: Text('Save'),

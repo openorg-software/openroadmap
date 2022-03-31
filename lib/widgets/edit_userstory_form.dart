@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/user.dart';
 import 'package:openroadmap/model/user_story.dart';
-import 'package:openroadmap/util/or_provider.dart';
+import 'package:openroadmap/provider/backend_provider_interface.dart';
 import 'package:provider/provider.dart';
 
 class EditUserStoryForm extends StatefulWidget {
@@ -109,7 +109,7 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
           ),
           Container(
             padding: EdgeInsets.fromLTRB(0, 16, 0, 16),
-            child: Consumer<ORProvider>(
+            child: Consumer<BackendProviderInterface>(
               builder: (context, orProvider, child) {
                 return ElevatedButton(
                   child: Text('Save'),
@@ -140,7 +140,7 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                   fontSize: 18,
                 ),
               ),
-              Consumer<ORProvider>(
+              Consumer<BackendProviderInterface>(
                 builder: (context, orProvider, child) {
                   return Container(
                     height: orProvider.rm.users.length > 0 ? 200 : 20,
@@ -191,7 +191,8 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                   fontSize: 18,
                 ),
               ),
-              Consumer<ORProvider>(builder: (context, orProvider, child) {
+              Consumer<BackendProviderInterface>(
+                  builder: (context, orProvider, child) {
                 return Container(
                   padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
                   child: ElevatedButton(
@@ -206,7 +207,7 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
               Container(
                 height: 200,
                 width: 600,
-                child: Consumer<ORProvider>(
+                child: Consumer<BackendProviderInterface>(
                   builder: (context, orProvider, child) {
                     return ListView.builder(
                       scrollDirection: Axis.vertical,

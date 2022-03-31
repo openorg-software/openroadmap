@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/release.dart';
-import 'package:openroadmap/util/or_provider.dart';
+import 'package:openroadmap/provider/backend_provider_interface.dart';
 import 'package:provider/provider.dart';
 
 class EditReleaseForm extends StatefulWidget {
@@ -107,7 +107,7 @@ class _EditReleaseForm extends State<EditReleaseForm> {
           ),
           Container(
             padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
-            child: Consumer<ORProvider>(
+            child: Consumer<BackendProviderInterface>(
               builder: (context, orProvider, child) {
                 return ElevatedButton(
                   child: Text('Save'),
