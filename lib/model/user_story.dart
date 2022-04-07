@@ -223,7 +223,7 @@ class UserStory extends StatelessWidget {
                                                       (User u) => u.id == um.id)
                                                   .color
                                                   .computeLuminance() >
-                                              ThemeProvider.brigthToDarkBorder
+                                              ThemeProvider.brightToDarkBorder
                                           ? Colors.black
                                           : Colors.white,
                                     )),

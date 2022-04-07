@@ -5,6 +5,11 @@ import 'package:openroadmap/model/user.dart';
 import 'package:openroadmap/model/user_story.dart';
 
 abstract class BackendProviderInterface with ChangeNotifier {
+  BackendProviderInterface() {
+    futureRoadmaps = Future.delayed(
+        Duration(seconds: 0), () => List<Roadmap>.empty(growable: true));
+  }
+
   late Roadmap rm;
 
   Future<Roadmap> frm = Future.delayed(
@@ -38,19 +43,41 @@ abstract class BackendProviderInterface with ChangeNotifier {
             roadmapSpecVersion: 1,
           ));
 
+  late Future<List<Roadmap>> futureRoadmaps;
+
+  /*
+  User Management
+   */
   Future<dynamic> registerUser(String email, String password);
 
   Future<dynamic> login(String email, String password);
 
   Future<dynamic> logout();
 
-  Release getReleaseById(int id);
-
-  UserStory getUserStoryInReleaseById(int releaseId, int userStoryId);
-
+  /*
+  Business Logic
+   */
+  void fetchRoadmaps();
+  void addRoadmap(Roadmap rm);
   void saveRoadmap(BuildContext context);
-
   void loadRoadmap(BuildContext context);
 
+  Release getReleaseById(int id);
+  UserStory getUserStoryInReleaseById(int releaseId, int userStoryId);
+
+  void addReleaseToRoadmap(
+    Release id,
+  );
+  void updateRelease();
+  void deleteRelease();
+
+  void addUserStoryToRelease();
+  void removeUserStoryFromRelease();
+  void updateUserStory();
+  void deleteUserStory();
+
+  /*
+  UI
+   */
   rebuild();
 }

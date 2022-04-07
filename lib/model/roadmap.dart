@@ -23,6 +23,18 @@ class Roadmap {
     required this.roadmapSpecVersion,
   });
 
+  factory Roadmap.empty(String name) {
+    return Roadmap(
+      name: name,
+      releases: List<Release>.empty(growable: true),
+      storyPointsPerSprint: 0,
+      sprintLength: Duration(days: 0),
+      users: List<User>.empty(growable: true),
+      userDefinedStyle: '',
+      roadmapSpecVersion: 2,
+    );
+  }
+
   factory Roadmap.fromJson(var json) {
     List<Release> releases;
     if (json['version'] != null && json['version'] < 2) {

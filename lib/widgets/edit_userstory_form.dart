@@ -160,21 +160,21 @@ class _EditUserStoryForm extends State<EditUserStoryForm> {
                                     ? Icon(
                                         Icons.remove,
                                         color: u.color.computeLuminance() >
-                                                ThemeProvider.brigthToDarkBorder
+                                                ThemeProvider.brightToDarkBorder
                                             ? Colors.black
                                             : Colors.white,
                                       )
                                     : Icon(
                                         Icons.add,
                                         color: u.color.computeLuminance() >
-                                                ThemeProvider.brigthToDarkBorder
+                                                ThemeProvider.brightToDarkBorder
                                             ? Colors.black
                                             : Colors.white,
                                       ),
                                 label: Text(u.name,
                                     style: TextStyle(
                                       color: u.color.computeLuminance() >
-                                              ThemeProvider.brigthToDarkBorder
+                                              ThemeProvider.brightToDarkBorder
                                           ? Colors.black
                                           : Colors.white,
                                     )),

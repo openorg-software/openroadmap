@@ -4,7 +4,7 @@ class ThemeProvider extends ChangeNotifier {
   static double tileHeight = 120;
   static double tileWidth = 350;
   static double headerHeight = 90;
-  static double brigthToDarkBorder = 0.3;
+  static double brightToDarkBorder = 0.3;
   bool darkMode = false;
 
   void toggleDarkMode() {

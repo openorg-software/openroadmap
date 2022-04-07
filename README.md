@@ -27,11 +27,18 @@
 | Web deployment | Make deployable as web application with user login (OAuth2.0) and database backend | |
 | OpenRQM integration | Link user stories with requirements in OpenRQM | |
 
-## How to build
+## How to build for desktop
 
 ```bash
 flutter pub get
 flutter build <desktop platform>
+```
+
+## How to build for web
+
+```bash
+flutter pub get
+flutter build web --no-sound-null-safety --csp --web-renderer html --dart-define=BASE_URL=openorg.software
 ```
 
 ## License

@@ -226,7 +226,7 @@ class _EditRoadmapForm extends State<EditRoadmapForm> {
                               ),
                               color: widget.roadmap.users[index].color
                                           .computeLuminance() <
-                                      ThemeProvider.brigthToDarkBorder
+                                      ThemeProvider.brightToDarkBorder
                                   ? Colors.grey
                                   : Colors.white,
                             ),

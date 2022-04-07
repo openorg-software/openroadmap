@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/release.dart';
 import 'package:openroadmap/model/roadmap.dart';
@@ -10,18 +9,18 @@ import 'package:openroadmap/widgets/export_form.dart';
 import 'package:openroadmap/widgets/kanban_list.dart';
 import 'package:provider/provider.dart';
 
-class MainViewWeb extends StatefulWidget {
+class RoadmapView extends StatefulWidget {
   String email;
-  MainViewWeb({
+  RoadmapView({
     required this.email,
     Key? key,
   }) : super(key: key);
 
   @override
-  _MainViewWeb createState() => _MainViewWeb();
+  _RoadmapView createState() => _RoadmapView();
 }
 
-class _MainViewWeb extends State<MainViewWeb> {
+class _RoadmapView extends State<RoadmapView> {
   @override
   void initState() {
     super.initState();
@@ -195,7 +194,7 @@ class _MainViewWeb extends State<MainViewWeb> {
                 return Center(
                   child: CircularProgressIndicator(
                     valueColor: new AlwaysStoppedAnimation<Color>(
-                        Theme.of(context).accentColor),
+                        Theme.of(context).colorScheme.secondary),
                   ),
                 );
               }

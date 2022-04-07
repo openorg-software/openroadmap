@@ -14,6 +14,7 @@ class DesktopProvider with ChangeNotifier implements BackendProviderInterface {
 
   late Future<Roadmap> frm;
 
+  late Future<List<Roadmap>> futureRoadmaps;
   DesktopProvider() {
     frm = Future.delayed(
       Duration(seconds: 0),
@@ -132,5 +133,50 @@ class DesktopProvider with ChangeNotifier implements BackendProviderInterface {
   Future registerUser(String email, String password) {
     // TODO: implement registerUser
     throw UnimplementedError();
+  }
+
+  @override
+  void fetchRoadmaps() {
+    // TODO: implement fetchRoadmaps
+  }
+
+  @override
+  void addRoadmap(Roadmap rm) {
+    // TODO: implement addRoadmap
+  }
+
+  @override
+  void addReleaseToRoadmap(Release id) {
+    // TODO: implement addReleaseToRoadmap
+  }
+
+  @override
+  void addUserStoryToRelease() {
+    // TODO: implement addUserStoryToRelease
+  }
+
+  @override
+  void deleteRelease() {
+    // TODO: implement deleteRelease
+  }
+
+  @override
+  void deleteUserStory() {
+    // TODO: implement deleteUserStory
+  }
+
+  @override
+  void removeUserStoryFromRelease() {
+    // TODO: implement removeUserStoryFromRelease
+  }
+
+  @override
+  void updateRelease() {
+    // TODO: implement updateRelease
+  }
+
+  @override
+  void updateUserStory() {
+    // TODO: implement updateUserStory
   }
 }

@@ -1,8 +1,4 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:appwrite/appwrite.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:openroadmap/model/release.dart';
 import 'package:openroadmap/model/roadmap.dart';
@@ -20,7 +16,16 @@ class AppwriteProvider with ChangeNotifier implements BackendProviderInterface {
 
   late Future<Roadmap> frm;
 
+  late Future<List<Roadmap>> futureRoadmaps;
+
+  String getBaseUrl() => const String.fromEnvironment('BASE_URL',
+      defaultValue: 'openorg.software');
+
   AppwriteProvider() {
+    client
+        .setEndpoint('https://aw.${getBaseUrl()}/v1')
+        .setProject('62408183b8986e2ee510');
+
     frm = Future.delayed(
       Duration(seconds: 50),
       () => Roadmap(
@@ -53,10 +58,8 @@ class AppwriteProvider with ChangeNotifier implements BackendProviderInterface {
       ),
     ).then((value) => this.rm = value);
 
-    client
-        .setEndpoint('http://localhost/v1')
-        .setProject('62408183b8986e2ee510')
-        .setSelfSigned();
+    futureRoadmaps = Future.delayed(
+        Duration(seconds: 0), () => List<Roadmap>.empty(growable: true));
   }
 
   Future<dynamic> registerUser(String email, String password) async {
@@ -123,40 +126,57 @@ class AppwriteProvider with ChangeNotifier implements BackendProviderInterface {
 
   @override
   void saveRoadmap(BuildContext context) async {
-    rm.releases = rm.releases;
-    String? outputFilePath = await FilePicker.platform.saveFile(
-      dialogTitle: 'Save this roadmap:',
-      fileName: 'roadmap.json',
-      allowedExtensions: ['json'],
-      type: FileType.custom,
-      lockParentWindow: true,
-    );
-    if (outputFilePath != null) {
-      final file = File(outputFilePath);
-      file.writeAsStringSync(rm.toJson().toString());
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Saved: $outputFilePath')));
-    }
+    // TODO: implement saveRoadmap
   }
 
   @override
   void loadRoadmap(BuildContext context) async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['json'],
-      dialogTitle: 'Load Roadmap',
-      lockParentWindow: true,
-    );
+    // TODO: implement loadRoadmap
+  }
 
-    if (result != null) {
-      File file = File(result.files.single.path!);
-      rm = Roadmap.fromJson(jsonDecode(file.readAsStringSync()));
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Loaded: ${result.files.single.path}')));
-      rebuild();
-    } else {
-      // User canceled the picker
-    }
+  @override
+  void fetchRoadmaps() {
+    // TODO: implement fetchRoadmaps
+  }
+
+  @override
+  void addRoadmap(Roadmap rm) {
+    // TODO: implement addRoadmap
+  }
+
+  @override
+  void addReleaseToRoadmap(Release id) {
+    // TODO: implement addReleaseToRoadmap
+  }
+
+  @override
+  void addUserStoryToRelease() {
+    // TODO: implement addUserStoryToRelease
+  }
+
+  @override
+  void deleteRelease() {
+    // TODO: implement deleteRelease
+  }
+
+  @override
+  void deleteUserStory() {
+    // TODO: implement deleteUserStory
+  }
+
+  @override
+  void removeUserStoryFromRelease() {
+    // TODO: implement removeUserStoryFromRelease
+  }
+
+  @override
+  void updateRelease() {
+    // TODO: implement updateRelease
+  }
+
+  @override
+  void updateUserStory() {
+    // TODO: implement updateUserStory
   }
 
   @override

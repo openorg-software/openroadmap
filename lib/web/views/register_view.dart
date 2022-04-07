@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:openroadmap/provider/appwrite_provider.dart';
-import 'package:openroadmap/web/views/main_view.dart';
+import 'package:openroadmap/provider/backend_provider_interface.dart';
+import 'package:openroadmap/web/views/roadmap_view.dart';
 import 'package:provider/provider.dart';
 
 class RegisterView extends StatefulWidget {
@@ -15,7 +15,7 @@ class _RegisterView extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     final _editKey = GlobalKey<FormState>();
-    return Consumer<AppwriteProvider>(
+    return Consumer<BackendProviderInterface>(
         builder: (context, appwriteProvider, child) {
       return Scaffold(
         appBar: AppBar(
@@ -66,7 +66,7 @@ class _RegisterView extends State<RegisterView> {
                           (value) => Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => MainViewWeb(
+                              builder: (context) => RoadmapView(
                                 email: email,
                               ),
                             ),

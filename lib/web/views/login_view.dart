@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:openroadmap/provider/backend_provider_interface.dart';
-import 'package:openroadmap/web/views/main_view.dart';
+import 'package:openroadmap/web/views/overview.dart';
 import 'package:openroadmap/web/views/register_view.dart';
 import 'package:provider/provider.dart';
 
@@ -72,7 +72,7 @@ class _LoginView extends State<LoginView> {
                               (value) => Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => MainViewWeb(
+                                  builder: (context) => Overview(
                                     email: email,
                                   ),
                                 ),
