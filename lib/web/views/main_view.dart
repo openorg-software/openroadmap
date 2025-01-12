@@ -195,7 +195,7 @@ class _MainViewWeb extends State<MainViewWeb> {
                 return Center(
                   child: CircularProgressIndicator(
                     valueColor: new AlwaysStoppedAnimation<Color>(
-                        Theme.of(context).accentColor),
+                        Theme.of(context).highlightColor),
                   ),
                 );
               }

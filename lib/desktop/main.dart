@@ -405,7 +405,7 @@ class _OpenRoadmapState extends State<OpenRoadmap> {
                 return Center(
                   child: CircularProgressIndicator(
                     valueColor: new AlwaysStoppedAnimation<Color>(
-                        Theme.of(context).accentColor),
+                        Theme.of(context).highlightColor),
                   ),
                 );
               }
